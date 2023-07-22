@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.freese</groupId>
+        <artifactId>maven-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
+
+    <groupId>de.freese.maven.proxy</groupId>
+    <artifactId>maven-proxy</artifactId>
+    <packaging>pom</packaging>
+
+    <name>${project.groupId} - ${project.artifactId}</name>
+    <description>A simple Maven Proxy</description>
+    <url>https://github.com/tfreese/maven-proxy</url>
+    <inceptionYear>2023</inceptionYear>
+
+    <organization>
+        <name>Thomas Freese</name>
+        <url>https://github.com/tfreese/maven-proxy</url>
+    </organization>
+
+    <scm>
+        <url>${project.url}</url>
+        <connection>scm:git:git@github.com/tfreese/maven-proxy.git</connection>
+        <developerConnection>scm:git:git@github.com/tfreese/maven-proxy.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <developers>
+        <developer>
+            <id>tfreese</id>
+            <name>Thomas Freese</name>
+            <url>${project.organization.url}</url>
+            <roles>
+                <role>developer</role>
+                <role>architect</role>
+            </roles>
+            <timezone>+2</timezone>
+        </developer>
+    </developers>
+
+    <dependencies>
+        <!-- compile scope -->
+        <!-- runtime scope -->
+        <!-- provided scope -->
+        <!-- test scope -->
+    </dependencies>
+
+    <modules>
+        <!--module>jsync-core</module>
+        <module>jsync-console</module>
+        <module>jsync-remote-rsocket</module>
+        <module>jsync-remote-rsocket-server</module>
+        <module>jsync-remote-nio</module>
+        <module>jsync-remote-nio-server</module>
+        <module>jsync-swing</module>
+        <module>jsync-test</module-->
+    </modules>
+
+</project>
