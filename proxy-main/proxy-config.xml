@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://www.w3schools.com/xml/schema_intro.asp -->
+
+<!--<proxy-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="proxy-config.xsd">-->
+
+<proxy-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://github.com/tfreese/maven-proxy/config"
+              xsi:schemaLocation="http://github.com/tfreese/maven-proxy/config https://raw.githubusercontent.com/tfreese/java/master/maven-proxy/src/main/xsd/proxy-config.xsd">
+
+    <port>7999</port>
+
+    <repositories>
+        <remote>
+            <name>maven-central</name>
+            <url>https://repo1.maven.org/maven2</url>
+        </remote>
+        <remote>
+            <name>spring-release</name>
+            <url>https://repo.spring.io/release</url>
+        </remote>
+        <remote>
+            <name>primefaces</name>
+            <url>https://repository.primefaces.org</url>
+        </remote>
+        <remote>
+            <name>gradle-releases</name>
+            <url>https://repo.gradle.org/gradle/libs-releases</url>
+        </remote>
+        <remote>
+            <name>gradle-plugins</name>
+            <url>https://plugins.gradle.org/m2</url>
+        </remote>
+        <local>
+            <name>deploy-releases</name>
+            <path>file:///opt/maven-proxy/work/deploy-releases</path>
+        </local>
+        <local>
+            <name>deploy-snapshots</name>
+            <path>file:///opt/maven-proxy/work/deploy-snapshots</path>
+        </local>
+        <local>
+            <name>deploy-sites</name>
+            <path>file:///opt/maven-proxy/work/deploy-sites</path>
+        </local>
+        <virtual>
+            <name>public</name>
+            <repository-name>maven-central</repository-name>
+            <repository-name>spring-release</repository-name>
+            <repository-name>primefaces</repository-name>
+            <repository-name>gradle-releases</repository-name>
+            <repository-name>gradle-plugins</repository-name>
+            <repository-name>deploy-releases</repository-name>
+            <repository-name>deploy-snapshots</repository-name>
+        </virtual>
+        <virtual>
+            <name>public-local</name>
+            <repository-name>deploy-releases</repository-name>
+            <repository-name>deploy-snapshots</repository-name>
+        </virtual>
+    </repositories>
+
+    <file-cache enabled="true">
+        <local-url>file:///tmp/maven-proxy/cache</local-url>
+    </file-cache>
+
+    <db-monitoring enabled="false">
+        <jdbc-url>jdbc:string</jdbc-url>
+    </db-monitoring>
+
+</proxy-config>

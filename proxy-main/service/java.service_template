@@ -1,0 +1,89 @@
+[Unit]
+Description=Spring MVC Java Service
+After=syslog.target network-online.target
+
+[Service]
+# useradd --system --no-create-home --shell=/usr/bin/nologin jvmapps
+# Gruppe jvmapps wird automatisch angelegt.
+# User testen
+#  - sudo -u jvmapps whoami
+#  - id jvmapps
+
+User=jvmapps
+Group=jvmapps
+
+Type=simple
+
+# The configuration file application.properties should be here:
+WorkingDirectory=/opt/jvmapps/spring-mvc
+
+# https://www.freedesktop.org/software/systemd/man/journalctl.html
+# journalctl -u mavenProxy.service -f
+# journalctl -u mavenProxy.service -r
+SyslogIdentifier=spring-mvc
+StandardOutput=journal
+StandardError=journal
+
+# When a JVM receives a SIGINT signal it exits with code 130
+#KillSignal=SIGINT
+#SuccessExitStatus=130
+
+# When a JVM receives a SIGTERM signal it exits with code 143
+KillSignal=SIGTERM
+SuccessExitStatus=143
+
+TimeoutStopSec=20
+Restart=no
+#Restart=on-failure
+#RestartSec=5
+#StartLimitInterval=0
+#StartLimitBurst=10
+
+# Specifies the maximum file descriptor number that can be opened by this process
+LimitNOFILE=65536
+
+LimitNPROC=500000
+
+#https://www.freedesktop.org/software/systemd/man/systemd.exec.html#LimitCPU=
+#LimitCPU=, LimitFSIZE=, LimitDATA=, LimitSTACK=, LimitCORE=, LimitRSS=, LimitNOFILE=, LimitAS=, LimitNPROC=, LimitMEMLOCK=, LimitLOCKS=, LimitSIGPENDING=, LimitMSGQUEUE=, LimitNICE=, LimitRTPRIO=, LimitRTTIME=¶
+
+Environment="ENV=stage"
+
+# Run ExecStartPre with root-permissions
+# + = root-permissions
+#ExecStartPre=+/bin/mkdir -p /opt/jvmapps/someDir
+#ExecStartPre=+/bin/chown -R jvmapps:jvmapps /opt/jvmapps/someDir
+#ExecStartPre=+/bin/chmod -R 775 /opt/jvmapps/someDir
+
+#https://www.freedesktop.org/software/systemd/man/systemd.service.html#ExecStart=
+# ExecStart=${JAVA_HOME}/bin/java -jar javaapp.jar
+# ExecStart=/bin/bash -c "java ..."
+
+ExecStart=/usr/bin/java \
+ -Dlog4j.configurationFile=log4j2-spring.xml \
+ -DLog4jContextSelector=org.apache.logging.log4j.core.async.AsyncLoggerContextSelector \
+ -Dspring.profiles.active=stage \
+ -Denvironment-type=stage \
+ -XX:+UseConcMarkSweepGC \
+ -XX:CMSInitiatingOccupancyFraction=80 \
+ -XX:NewSize=756m \
+ -XX:MetaspaceSize=256m \
+ -Dsun.net.inetaddr.ttl=5 \
+ -Xloggc:/var/log/spring-mvc/gc.log \
+ -verbose:gc \
+ -verbosegc \
+ -XX:+DisableExplicitGC \
+ -XX:+PrintGCDetails \
+ -XX:+PrintGCDateStamps \
+ -XX:+PreserveFramePointer \
+ -XX:+StartAttachListener \
+ -Xms768m \
+ -Xmx1024m \
+ -XX:+HeapDumpOnOutOfMemoryError \
+ -jar spring-mvc.war
+
+# ExecStop=/bin/kill -15 $MAINPID
+# ExecReload = /usr/local/bin/Service_Name.sh reload
+
+[Install]
+WantedBy=multi-user.target

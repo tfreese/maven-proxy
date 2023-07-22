@@ -44,22 +44,18 @@
         </developer>
     </developers>
 
+    <modules>
+        <module>proxy-config</module>
+        <module>proxy-main</module>
+        <module>blobstore-api</module>
+        <module>proxy-core</module>
+    </modules>
+
     <dependencies>
         <!-- compile scope -->
         <!-- runtime scope -->
         <!-- provided scope -->
         <!-- test scope -->
     </dependencies>
-
-    <modules>
-        <!--module>jsync-core</module>
-        <module>jsync-console</module>
-        <module>jsync-remote-rsocket</module>
-        <module>jsync-remote-rsocket-server</module>
-        <module>jsync-remote-nio</module>
-        <module>jsync-remote-nio-server</module>
-        <module>jsync-swing</module>
-        <module>jsync-test</module-->
-    </modules>
 
 </project>

@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="MavenProxyLauncher" type="Application" factoryName="Application" nameIsGenerated="true">
+    <option name="MAIN_CLASS_NAME" value="de.freese.maven.proxy.main.MavenProxyLauncher" />
+    <module name="proxy-main" />
+    <option name="VM_PARAMETERS" value="-Dmaven-proxy.config=$PROJECT_DIR$/proxy-main/proxy-config.xml" />
+    <option name="WORKING_DIRECTORY" value="$MODULE_WORKING_DIR$" />
+    <extension name="coverage">
+      <pattern>
+        <option name="PATTERN" value="de.freese.maven.proxy.main.*" />
+        <option name="ENABLED" value="true" />
+      </pattern>
+    </extension>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.freese.maven.proxy</groupId>
+        <artifactId>maven-proxy</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>proxy-config</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId} - ${project.artifactId}</name>
+    <description>Proxy Configuration</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <!-- jaxb2:xjc -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <skipXjc>false</skipXjc>
+                    <sources>
+                        <source>${project.basedir}/src/main/resources/xsd/proxy-config.xsd</source>
+                    </sources>
+                    <xjbSources>
+                        <xjbSource>${project.basedir}/src/main/resources/xsd/schema.xjb</xjbSource>
+                    </xjbSources>
+                    <packageName>de.freese.maven.proxy.config</packageName>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <noPackageLevelAnnotations>true</noPackageLevelAnnotations>
+                    <readOnly>true</readOnly>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- compile scope -->
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+        
+        <!-- runtime scope -->
+        <!-- provided scope -->
+        <!-- test scope -->
+    </dependencies>
+
+</project>

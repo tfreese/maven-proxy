@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- https://www.w3schools.com/xml/schema_intro.asp -->
+
+<!--<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">-->
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns="http://github.com/tfreese/maven-proxy/config"
+           targetNamespace="http://github.com/tfreese/maven-proxy/config"
+           attributeFormDefault="unqualified"
+           elementFormDefault="qualified"
+>
+
+    <!--    <import schemaLocation="baseTypes.xsd" namespace="http://baseTypes" />-->
+
+    <xs:element name="proxy-config">
+        <xs:annotation>
+            <xs:documentation source="description">Configuration for the Maven-Proxy.</xs:documentation>
+        </xs:annotation>
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="port" type="ProxyPort" />
+                <xs:element name="repositories" type="Repositories" />
+                <xs:element name="file-cache" type="FileCache" minOccurs="0" />
+                <xs:element name="db-monitoring" type="DbMonitoring" minOccurs="0" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:simpleType name="ProxyPort">
+        <xs:annotation>
+            <xs:documentation source="description">Port for the Maven-Proxy [1025-65534].</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:positiveInteger">
+            <xs:minExclusive value="1024" />
+            <xs:maxExclusive value="65535" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="FileUri">
+        <xs:annotation>
+            <xs:documentation source="description">file://*</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:anyURI">
+            <xs:minLength value="10" />
+            <xs:pattern value="file://.*" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="RemoteUri">
+        <xs:annotation>
+            <xs:documentation source="description">http://*, https://</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:anyURI">
+            <xs:minLength value="10" />
+            <xs:pattern value="http://.*" />
+            <xs:pattern value="https://.*" />
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="LocalRepo">
+        <xs:annotation>
+            <xs:documentation source="description">
+                Local file Repository for deployments [file://*].
+                Like: deploy-releases, deploy-snapshots, deploy-sites
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="xs:normalizedString" />
+            <xs:element name="path" type="FileUri" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="RemoteRepo">
+        <xs:annotation>
+            <xs:documentation source="description">Remote Repository for Dependencies [http://*,https://*].</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="xs:normalizedString" />
+            <xs:element name="url" type="RemoteUri" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="VirtualRepo">
+        <xs:annotation>
+            <xs:documentation source="description">
+                Virtual Repository as mirror for maven [http://HOST:PORT/NAME]
+                Processed in declarative order.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="name" type="xs:normalizedString" />
+            <xs:element name="repository-name" type="xs:normalizedString" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="Repositories">
+        <xs:annotation>
+            <xs:documentation source="description">Repository Declaration.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="remote" type="RemoteRepo" maxOccurs="unbounded" />
+            <xs:element name="local" type="LocalRepo" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="virtual" type="VirtualRepo" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="FileCache">
+        <xs:annotation>
+            <xs:documentation source="description">Local Cache for remote Repositories.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="local-url" type="FileUri">
+                <xs:annotation>
+                    <xs:documentation source="description">File Url for Cache [file://*]</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="enabled" type="xs:boolean" use="required">
+            <xs:annotation>
+                <xs:documentation source="description">Enable/Disable this service.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="DbMonitoring">
+        <xs:annotation>
+            <xs:documentation source="description">DB-Monitoring for the Maven-Proxy.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="jdbc-url">
+                <xs:simpleType>
+                    <xs:restriction base="xs:normalizedString">
+                        <xs:minLength value="10" />
+                        <xs:pattern value="jdbc:.*" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+        <xs:attribute name="enabled" type="xs:boolean" use="required">
+            <xs:annotation>
+                <xs:documentation source="description">Enable/Disable this service.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+
+    <!--    <xs:simpleType name="RepositoryUri">-->
+    <!--        <xs:annotation>-->
+    <!--            <xs:documentation source="description">file://*, http://*, https://*</xs:documentation>-->
+    <!--        </xs:annotation>-->
+    <!--        &lt;!&ndash;        <xs:restriction base="xs:anyURI">&ndash;&gt;-->
+    <!--        &lt;!&ndash;            <xs:pattern value="file://.*" />&ndash;&gt;-->
+    <!--        &lt;!&ndash;            <xs:pattern value="http://.*" />&ndash;&gt;-->
+    <!--        &lt;!&ndash;            <xs:pattern value="https://.*" />&ndash;&gt;-->
+    <!--        &lt;!&ndash;        </xs:restriction>&ndash;&gt;-->
+    <!--        <xs:union memberTypes="FileUri">-->
+    <!--            <xs:simpleType>-->
+    <!--                <xs:restriction base="xs:anyURI">-->
+    <!--                    <xs:minLength value="10"/>-->
+    <!--                    <xs:pattern value="http://.*"/>-->
+    <!--                    <xs:pattern value="https://.*"/>-->
+    <!--                </xs:restriction>-->
+    <!--            </xs:simpleType>-->
+    <!--        </xs:union>-->
+    <!--    </xs:simpleType>-->
+
+</xs:schema>
