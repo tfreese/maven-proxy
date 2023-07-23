@@ -1,5 +1,6 @@
 package de.freese.maven.proxy.blobstore.file;
 
+import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,7 +30,7 @@ final class FileBlob extends AbstractBlob {
             return InputStream.nullInputStream();
         }
 
-        return Files.newInputStream(this.absolutePath);
+        return new BufferedInputStream(Files.newInputStream(this.absolutePath));
     }
 
     @Override
@@ -45,5 +46,4 @@ final class FileBlob extends AbstractBlob {
     public String toString() {
         return this.absolutePath.toString();
     }
-
 }

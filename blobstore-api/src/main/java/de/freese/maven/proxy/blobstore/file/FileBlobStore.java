@@ -1,13 +1,15 @@
 // Created: 18.09.2019
 package de.freese.maven.proxy.blobstore.file;
 
-import java.io.IOException;
+import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.nio.file.StandardOpenOption;
 
 import de.freese.maven.proxy.blobstore.api.AbstractBlobStore;
 import de.freese.maven.proxy.blobstore.api.Blob;
@@ -18,24 +20,8 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
  */
 public class FileBlobStore extends AbstractBlobStore {
 
-    private final Path basePath;
-
-    public FileBlobStore(final Path basePath) throws IOException {
-        super();
-
-        this.basePath = Objects.requireNonNull(basePath, "basePath required");
-
-        // if (!Files.isWritable(this.basePath))
-        // {
-        // String msg = "Path not writeable: " + uri;
-        //
-        // getLogger().error(msg);
-        // throw new IllegalArgumentException(msg);
-        // }
-
-        if (Files.notExists(this.basePath)) {
-            Files.createDirectories(this.basePath);
-        }
+    public FileBlobStore(final URI uri) {
+        super(uri);
     }
 
     @Override
@@ -44,7 +30,7 @@ public class FileBlobStore extends AbstractBlobStore {
 
         Files.createDirectories(path.getParent());
 
-        return Files.newOutputStream(path);
+        return new BufferedOutputStream(Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
     }
 
     @Override
@@ -53,7 +39,7 @@ public class FileBlobStore extends AbstractBlobStore {
 
         Files.createDirectories(path.getParent());
 
-        Files.copy(inputStream, path);
+        Files.copy(inputStream, path, StandardCopyOption.REPLACE_EXISTING);
     }
 
     @Override
@@ -72,14 +58,9 @@ public class FileBlobStore extends AbstractBlobStore {
         return Files.exists(path);
     }
 
-    @Override
-    public String toString() {
-        return this.basePath.toString();
-    }
-
     Path toContentPath(final BlobId id) {
         URI uri = id.getUri();
-        String uriString = uri.toString();
+        String uriString = uri.getPath();
 
         uriString = uriString.replace(':', '/');
         uriString = uriString.replace('?', '/');
@@ -91,7 +72,11 @@ public class FileBlobStore extends AbstractBlobStore {
             uriString = uriString.replace("//", "/");
         }
 
-        return this.basePath.resolve(uriString);
+        if (uriString.startsWith("/")) {
+            uriString = uriString.substring(1);
+        }
+
+        return Paths.get(getUri()).resolve(uriString);
 
         //        byte[] uriBytes = uriString.getBytes(StandardCharsets.UTF_8);
         //        byte[] digest = getMessageDigest().digest(uriBytes);

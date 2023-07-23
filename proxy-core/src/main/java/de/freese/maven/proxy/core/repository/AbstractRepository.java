@@ -4,7 +4,6 @@ package de.freese.maven.proxy.core.repository;
 import java.net.URI;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 import de.freese.maven.proxy.core.lifecycle.AbstractLifecycle;
 
@@ -15,15 +14,28 @@ public abstract class AbstractRepository extends AbstractLifecycle implements Re
 
     private final String name;
 
-    protected AbstractRepository(final String name) {
+    private final URI uri;
+
+    protected AbstractRepository(final String name, final URI uri) {
         super();
 
-        this.name = Objects.requireNonNull(name, "name required");
+        this.name = checkNotNull(name, "Name");
+        this.uri = checkNotNull(uri, "URI");
     }
 
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public URI getUri() {
+        return uri;
+    }
+
+    @Override
+    public String toString() {
+        return getName() + ": " + getUri();
     }
 
     protected Path toRelativePath(final URI resource) {

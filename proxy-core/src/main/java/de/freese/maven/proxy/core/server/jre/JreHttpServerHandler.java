@@ -1,6 +1,8 @@
 // Created: 22.07.23
 package de.freese.maven.proxy.core.server.jre;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -13,7 +15,6 @@ import com.sun.net.httpserver.HttpHandler;
 import de.freese.maven.proxy.core.component.AbstractComponent;
 import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.component.ProxyUtils;
-import de.freese.maven.proxy.core.repository.LocalRepository;
 import de.freese.maven.proxy.core.repository.Repository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
 
@@ -123,7 +124,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_CONTENT_TYPE, ProxyUtils.getContentType(repositoryResponse.getFileName()));
         exchange.sendResponseHeaders(ProxyUtils.HTTP_OK, fileLength);
 
-        try (OutputStream outputStream = exchange.getResponseBody()) {
+        try (OutputStream outputStream = new BufferedOutputStream(exchange.getResponseBody())) {
             repositoryResponse.transferTo(outputStream);
 
             outputStream.flush();
@@ -147,8 +148,8 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
     private void handlePut(final HttpExchange exchange) throws Exception {
         URI uri = removeContextRoot(exchange.getRequestURI());
 
-        try (InputStream inputStream = exchange.getRequestBody()) {
-            ((LocalRepository) getRepository()).write(uri, inputStream);
+        try (InputStream inputStream = new BufferedInputStream(exchange.getRequestBody())) {
+            getRepository().write(uri, inputStream);
         }
 
         exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_SERVER, SERVER_NAME);

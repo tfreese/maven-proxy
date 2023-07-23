@@ -2,28 +2,21 @@
 package de.freese.maven.proxy.core.repository.local;
 
 import java.io.BufferedInputStream;
-import java.io.InputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Objects;
+import java.nio.file.Paths;
 
 import de.freese.maven.proxy.core.component.HttpMethod;
-import de.freese.maven.proxy.core.repository.AbstractRepository;
-import de.freese.maven.proxy.core.repository.LocalRepository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
 
 /**
  * @author Thomas Freese
  */
-public class FileRepository extends AbstractRepository implements LocalRepository {
+public class FileRepository extends AbstractLocalRepository {
 
-    private final Path path;
-
-    public FileRepository(final String name, final Path path) {
-        super(name);
-
-        this.path = Objects.requireNonNull(path, "path required");
+    public FileRepository(final String name, final URI uri) {
+        super(name, uri);
     }
 
     @Override
@@ -80,37 +73,18 @@ public class FileRepository extends AbstractRepository implements LocalRepositor
     }
 
     @Override
-    public Path getPath() {
-        return path;
-    }
-
-    @Override
     public boolean supports(final HttpMethod httpMethod) {
         return HttpMethod.HEAD.equals(httpMethod) || HttpMethod.GET.equals(httpMethod);
-    }
-
-    @Override
-    public String toString() {
-        return getName() + ": " + getPath().toString();
-    }
-
-    @Override
-    public void write(final URI uri, final InputStream inputStream) throws Exception {
-        throw new UnsupportedOperationException("read only repository: " + getName());
     }
 
     @Override
     protected void doStart() throws Exception {
         super.doStart();
 
-        if (!Files.isReadable(getPath())) {
-            throw new IllegalStateException("path not readable: " + getPath());
+        Path path = Paths.get(getUri());
+
+        if (!Files.isReadable(path)) {
+            throw new IllegalStateException("path not readable: " + path);
         }
-    }
-
-    protected Path toPath(final URI resource) {
-        Path relativePath = toRelativePath(resource);
-
-        return getPath().resolve(relativePath);
     }
 }

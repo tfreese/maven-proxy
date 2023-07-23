@@ -26,7 +26,7 @@ public class JreHttpClientComponent extends AbstractLifecycle {
     public JreHttpClientComponent(final ClientConfig clientConfig) {
         super();
 
-        this.clientConfig = clientConfig;
+        this.clientConfig = checkNotNull(clientConfig, "ClientConfig");
     }
 
     public HttpClient getHttpClient() {

@@ -19,10 +19,10 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
 
     private final Supplier<HttpClient> httpClientSupplier;
 
-    public JreHttpRemoteRepository(final String name, final URI baseUri, final Supplier<HttpClient> httpClientSupplier) {
-        super(name, baseUri);
+    public JreHttpRemoteRepository(final String name, final URI uri, final Supplier<HttpClient> httpClientSupplier) {
+        super(name, uri);
 
-        this.httpClientSupplier = httpClientSupplier;
+        this.httpClientSupplier = checkNotNull(httpClientSupplier, "Supplier<HttpClient>");
     }
 
     @Override

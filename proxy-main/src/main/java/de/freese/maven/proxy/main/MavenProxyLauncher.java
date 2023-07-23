@@ -20,18 +20,18 @@ import jakarta.xml.bind.Unmarshaller;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.freese.maven.proxy.config.LocalRepoConfig;
+import de.freese.maven.proxy.blobstore.api.BlobStore;
+import de.freese.maven.proxy.blobstore.file.FileBlobStore;
 import de.freese.maven.proxy.config.ProxyConfig;
 import de.freese.maven.proxy.core.component.JreHttpClientComponent;
 import de.freese.maven.proxy.core.lifecycle.LifecycleManager;
-import de.freese.maven.proxy.core.repository.LocalRepository;
-import de.freese.maven.proxy.core.repository.RemoteRepository;
 import de.freese.maven.proxy.core.repository.Repository;
 import de.freese.maven.proxy.core.repository.RepositoryManager;
-import de.freese.maven.proxy.core.repository.VirtualRepository;
+import de.freese.maven.proxy.core.repository.blobstore.BlobStoreRepository;
+import de.freese.maven.proxy.core.repository.local.CachedRepository;
 import de.freese.maven.proxy.core.repository.local.FileRepository;
-import de.freese.maven.proxy.core.repository.local.WriteableFileRepository;
 import de.freese.maven.proxy.core.repository.remote.JreHttpRemoteRepository;
+import de.freese.maven.proxy.core.repository.virtual.AbstractVirtualRepository;
 import de.freese.maven.proxy.core.repository.virtual.DefaultVirtualRepository;
 import de.freese.maven.proxy.core.server.ProxyServer;
 import de.freese.maven.proxy.core.server.jre.JreHttpServer;
@@ -89,29 +89,23 @@ public final class MavenProxyLauncher {
         RepositoryManager repositoryManager = new RepositoryManager();
 
         // LocalRepository
-        for (LocalRepoConfig localRepoConfig : proxyConfig.getRepositories().getLocals()) {
-            URI uri = URI.create(localRepoConfig.getPath());
-            Files.createDirectories(Paths.get(uri));
-        }
-
         proxyConfig.getRepositories().getLocals().forEach(localRepoConfig -> {
             URI uri = URI.create(localRepoConfig.getPath());
 
             if ("file".equalsIgnoreCase(uri.getScheme())) {
-                Path path = Paths.get(uri);
-
-                LocalRepository localRepository;
+                Repository repository;
 
                 if (localRepoConfig.isWriteable()) {
-                    localRepository = new WriteableFileRepository(localRepoConfig.getName(), path);
+                    BlobStore blobStore = new FileBlobStore(uri);
+                    repository = new BlobStoreRepository(localRepoConfig.getName(), uri, blobStore);
                 }
                 else {
-                    localRepository = new FileRepository(localRepoConfig.getName(), path);
+                    repository = new FileRepository(localRepoConfig.getName(), uri);
                 }
 
-                lifecycleManager.add(localRepository);
-                repositoryManager.add(localRepository);
-                proxyServer.addContextRoot(localRepoConfig.getName(), localRepository);
+                lifecycleManager.add(repository);
+                repositoryManager.add(repository);
+                proxyServer.addContextRoot(localRepoConfig.getName(), repository);
             }
             else {
                 LOGGER.error("Ignoring LocalRepository '{}', file URI scheme expected: {}", localRepoConfig.getName(), uri);
@@ -123,10 +117,10 @@ public final class MavenProxyLauncher {
             URI uri = URI.create(remoteRepo.getUrl());
 
             if ("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme())) {
-                RemoteRepository remoteRepository = new JreHttpRemoteRepository(remoteRepo.getName(), uri, httpClientComponent::getHttpClient);
-                lifecycleManager.add(remoteRepository);
-                repositoryManager.add(remoteRepository);
-                proxyServer.addContextRoot(remoteRepository.getName(), remoteRepository);
+                Repository repository = new JreHttpRemoteRepository(remoteRepo.getName(), uri, httpClientComponent::getHttpClient);
+                lifecycleManager.add(repository);
+                repositoryManager.add(repository);
+                proxyServer.addContextRoot(repository.getName(), repository);
             }
             else {
                 LOGGER.error("Ignoring RemoteRepository '{}', http/https URI scheme expected: {}", remoteRepo.getName(), uri);
@@ -136,7 +130,7 @@ public final class MavenProxyLauncher {
         // VirtualRepository
         proxyConfig.getRepositories().getVirtuals().forEach(virtualRepo -> {
             if (!virtualRepo.getRepositoryNames().isEmpty()) {
-                VirtualRepository virtualRepository = new DefaultVirtualRepository(virtualRepo.getName());
+                AbstractVirtualRepository virtualRepository = new DefaultVirtualRepository(virtualRepo.getName());
 
                 for (String repositoryName : virtualRepo.getRepositoryNames()) {
                     Repository repository = repositoryManager.getRepository(repositoryName);
@@ -146,19 +140,35 @@ public final class MavenProxyLauncher {
                         continue;
                     }
 
-                    if (repository instanceof LocalRepository lr) {
-                        virtualRepository.add(lr);
+                    if (repository instanceof AbstractVirtualRepository vr) {
+                        LOGGER.error("A VirtualRepository can not contain another VirtualRepository: {}", repository.getClass().getSimpleName());
+                        continue;
                     }
-                    else if (repository instanceof RemoteRepository rr) {
-                        virtualRepository.add(rr);
-                    }
-                    else {
-                        LOGGER.error("VirtualRepository can only contain LocalRepository or RemoteRepository: {}", repository.getClass().getSimpleName());
-                    }
+
+                    virtualRepository.add(repository);
                 }
 
                 lifecycleManager.add(virtualRepository);
-                proxyServer.addContextRoot(virtualRepository.getName(), virtualRepository);
+
+                Repository repository = virtualRepository;
+
+                if (proxyConfig.getFileCache().isEnabled()) {
+                    String localUri = proxyConfig.getFileCache().getLocalUrl();
+
+                    if (!localUri.endsWith("/")) {
+                        localUri += "/";
+                    }
+
+                    URI uri = URI.create(localUri).resolve(virtualRepository.getName() + "-cached");
+
+                    BlobStore blobStore = new FileBlobStore(uri);
+                    CachedRepository cachedRepository = new CachedRepository(virtualRepository, uri, blobStore);
+                    lifecycleManager.add(cachedRepository);
+
+                    repository = cachedRepository;
+                }
+
+                proxyServer.addContextRoot(repository.getName(), repository);
             }
             else {
                 LOGGER.error("Ignoring VirtualRepository '{}', no repositories configured", virtualRepo.getName());

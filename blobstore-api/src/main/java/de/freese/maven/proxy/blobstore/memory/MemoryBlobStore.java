@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -15,7 +16,12 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
  * @author Thomas Freese
  */
 public class MemoryBlobStore extends AbstractBlobStore {
+    
     private final Map<BlobId, byte[]> cache = new HashMap<>();
+
+    public MemoryBlobStore() {
+        super(URI.create("memory"));
+    }
 
     @Override
     public OutputStream create(final BlobId id) throws Exception {

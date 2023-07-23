@@ -14,6 +14,7 @@ import java.util.Objects;
  * @author Thomas Freese
  */
 public class BlobId implements Serializable, Comparable<BlobId> {
+    
     @Serial
     private static final long serialVersionUID = -5581749917166864024L;
 

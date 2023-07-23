@@ -1,14 +1,13 @@
 // Created: 03.05.2021
 package de.freese.maven.proxy.core.repository.local;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Objects;
 
+import de.freese.maven.proxy.blobstore.api.BlobId;
+import de.freese.maven.proxy.blobstore.api.BlobStore;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
 
 /**
@@ -17,12 +16,15 @@ import de.freese.maven.proxy.core.repository.RepositoryResponse;
 public class CachedRepositoryResponse extends RepositoryResponse {
     private static final int DEFAULT_BUFFER_SIZE = 8192;
 
-    private final Path path;
+    private final BlobId blobId;
 
-    public CachedRepositoryResponse(final RepositoryResponse repositoryResponse, Path path) {
+    private final BlobStore blobStore;
+
+    public CachedRepositoryResponse(final RepositoryResponse repositoryResponse, final BlobId blobId, final BlobStore blobStore) {
         super(repositoryResponse.getUri(), repositoryResponse.getContentLength(), repositoryResponse.getInputStream());
 
-        this.path = Objects.requireNonNull(path, "path required");
+        this.blobId = Objects.requireNonNull(blobId, "BlobId required");
+        this.blobStore = Objects.requireNonNull(blobStore, "BlobStore required");
     }
 
     @Override
@@ -32,15 +34,22 @@ public class CachedRepositoryResponse extends RepositoryResponse {
         long transferred = 0L;
 
         try (InputStream inputStream = getInputStream();
-             OutputStream fileOutputStream = new BufferedOutputStream(Files.newOutputStream(path), DEFAULT_BUFFER_SIZE)) {
+             OutputStream blobOutputStream = blobStore.create(blobId)) {
             while ((read = inputStream.read(buffer, 0, DEFAULT_BUFFER_SIZE)) >= 0) {
-                fileOutputStream.write(buffer, 0, read);
+                blobOutputStream.write(buffer, 0, read);
                 outputStream.write(buffer, 0, read);
 
                 transferred += read;
             }
 
-            fileOutputStream.flush();
+            blobOutputStream.flush();
+        }
+        catch (Exception ex) {
+            if (ex instanceof IOException ioex) {
+                throw ioex;
+            }
+
+            throw new IOException(ex);
         }
 
         return transferred;

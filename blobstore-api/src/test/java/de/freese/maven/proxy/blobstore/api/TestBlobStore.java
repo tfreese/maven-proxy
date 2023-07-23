@@ -89,6 +89,8 @@ class TestBlobStore {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
 
+        Files.createDirectories(PATH_TEST);
+
         BiConsumer<String, HikariConfig> hikariConfigurer = (poolName, config) -> {
             config.setUsername("sa");
             config.setPassword("");
@@ -110,7 +112,7 @@ class TestBlobStore {
         // Hsqldb
         config = new HikariConfig();
         config.setDriverClassName("org.hsqldb.jdbc.JDBCDriver");
-        config.setJdbcUrl("jdbc:hsqldb:mem:test;;shutdown=true");
+        config.setJdbcUrl("jdbc:hsqldb:mem:test;shutdown=true");
         hikariConfigurer.accept("hsqldb", config);
         dataSourceHsqldb = new HikariDataSource(config);
 
@@ -126,7 +128,7 @@ class TestBlobStore {
         // @formatter:off
         return Stream.of(
                 Arguments.of("Memory", new MemoryBlobStore()),
-                Arguments.of("File", new FileBlobStore(PATH_TEST)),
+                Arguments.of("File", new FileBlobStore(PATH_TEST.toUri())),
                 Arguments.of("DataSource-H2", new JdbcBlobStore(dataSourceH2)),
                 Arguments.of("DataSource-HSQLDB", new JdbcBlobStore(dataSourceHsqldb)),
                 Arguments.of("DataSource-Derby", new JdbcBlobStore(dataSourceDerby))
@@ -197,8 +199,8 @@ class TestBlobStore {
     @MethodSource("createArgumentes")
     @Order(1)
     void testOutputStream(final String name, final BlobStore blobStore) throws Exception {
-        if (blobStore instanceof JdbcBlobStore dsBs) {
-            dsBs.createDatabaseIfNotExist();
+        if (blobStore instanceof JdbcBlobStore jdbcBlobStore) {
+            jdbcBlobStore.createDatabaseIfNotExist();
         }
 
         Path path = Paths.get("pom.xml");

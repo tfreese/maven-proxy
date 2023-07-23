@@ -44,7 +44,7 @@ public class JreHttpServer extends AbstractProxyServer {
         getContextRoots().forEach((contextRoot, repository) -> {
             String path = "/" + contextRoot;
 
-            getLogger().info("{}: add contextRoot {}", repository.getClass().getSimpleName(), path);
+            getLogger().info("add contextRoot '{}' for {}", path, repository.getClass().getSimpleName());
 
             HttpContext httpContext = this.httpServer.createContext(path, new JreHttpServerHandler(repository));
             httpContexts.add(httpContext);

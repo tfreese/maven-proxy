@@ -5,6 +5,7 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -23,12 +24,26 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
  */
 public class JdbcBlobStore extends AbstractBlobStore {
 
+    private static URI getUri(DataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            String url = connection.getMetaData().getURL();
+
+            return URI.create(url);
+        }
+        catch (SQLException ex) {
+            // Ignore
+        }
+
+        return URI.create("jdbc");
+    }
+
     private final DataSource dataSource;
 
     public JdbcBlobStore(DataSource dataSource) {
-        super();
+        super(getUri(dataSource));
 
         this.dataSource = Objects.requireNonNull(dataSource, "dataSource required");
+
     }
 
     @Override

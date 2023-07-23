@@ -12,13 +12,13 @@ public final class Misc {
     }
 
     private static void testUrl() throws Exception {
-        URI uri = URI.create("/public/org/maven/pom.xml");
+        URI uri = URI.create("file:///tmp/maven-proxy/cache/");
 
-        System.out.println(uri.relativize(URI.create("/public")));
-        System.out.println(URI.create("/public").relativize(uri));
-        System.out.println(URI.create(uri.getPath().replace("/public", "")));
-        System.out.println(uri.resolve("/public"));
-        System.out.println(uri.normalize());
+        String relative = "public-cached";
+
+        System.out.println(uri.relativize(URI.create(relative)));
+        System.out.println(uri.resolve(URI.create(relative)));
+        System.out.println(uri.resolve(relative));
     }
 
     private Misc() {

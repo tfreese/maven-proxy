@@ -3,6 +3,7 @@ package de.freese.maven.proxy.blobstore.api;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.URI;
 
 /**
  * Interface of a BlobStore.<br>
@@ -12,6 +13,7 @@ import java.io.OutputStream;
  * @author Thomas Freese
  */
 public interface BlobStore {
+    
     /**
      * <b>This Stream MUST be closed to avoid resource exhausting !</b>
      */
@@ -24,4 +26,6 @@ public interface BlobStore {
     boolean exists(BlobId id) throws Exception;
 
     Blob get(BlobId id) throws Exception;
+
+    URI getUri();
 }
