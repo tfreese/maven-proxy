@@ -49,6 +49,7 @@
         <module>proxy-main</module>
         <module>blobstore-api</module>
         <module>proxy-core</module>
+        <module>test-project</module>
     </modules>
 
     <dependencies>

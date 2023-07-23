@@ -11,7 +11,7 @@
         <mirror>
             <id>central</id>
             <name>local-maven-proxy</name>
-            <url>http://localhost:7999</url>
+            <url>http://localhost:7999/public</url>
             <mirrorOf>*</mirrorOf>
         </mirror>
     </mirrors>

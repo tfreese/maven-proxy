@@ -5,9 +5,20 @@
 <!--<proxy-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="proxy-config.xsd">-->
 
 <proxy-config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://github.com/tfreese/maven-proxy/config"
-              xsi:schemaLocation="http://github.com/tfreese/maven-proxy/config https://raw.githubusercontent.com/tfreese/java/master/maven-proxy/src/main/xsd/proxy-config.xsd">
+              xsi:schemaLocation="http://github.com/tfreese/maven-proxy/config https://raw.githubusercontent.com/tfreese/maven-proxy/master/proxy-main/proxy-config.xml">
 
-    <port>7999</port>
+    <server-config>
+        <port>7999</port>
+        <thread-pool-core-size>2</thread-pool-core-size>
+        <thread-pool-max-size>6</thread-pool-max-size>
+        <thread-name-pattern>http-server-%d</thread-name-pattern>
+    </server-config>
+
+    <client-config>
+        <thread-pool-core-size>2</thread-pool-core-size>
+        <thread-pool-max-size>6</thread-pool-max-size>
+        <thread-name-pattern>http-client-%d</thread-name-pattern>
+    </client-config>
 
     <repositories>
         <remote>
@@ -31,19 +42,24 @@
             <url>https://plugins.gradle.org/m2</url>
         </remote>
         <local>
+            <name>third-party</name>
+            <path>file:///tmp/maven-proxy/third-party</path>
+        </local>
+        <local writeable="true">
             <name>deploy-releases</name>
-            <path>file:///opt/maven-proxy/work/deploy-releases</path>
+            <path>file:///tmp/maven-proxy/deploy-releases</path>
         </local>
-        <local>
+        <local writeable="true">
             <name>deploy-snapshots</name>
-            <path>file:///opt/maven-proxy/work/deploy-snapshots</path>
+            <path>file:///tmp/maven-proxy/deploy-snapshots</path>
         </local>
-        <local>
+        <local writeable="true">
             <name>deploy-sites</name>
-            <path>file:///opt/maven-proxy/work/deploy-sites</path>
+            <path>file:///tmp/maven-proxy/deploy-sites</path>
         </local>
         <virtual>
             <name>public</name>
+            <repository-name>third-party</repository-name>
             <repository-name>maven-central</repository-name>
             <repository-name>spring-release</repository-name>
             <repository-name>primefaces</repository-name>
@@ -54,6 +70,7 @@
         </virtual>
         <virtual>
             <name>public-local</name>
+            <repository-name>third-party</repository-name>
             <repository-name>deploy-releases</repository-name>
             <repository-name>deploy-snapshots</repository-name>
         </virtual>

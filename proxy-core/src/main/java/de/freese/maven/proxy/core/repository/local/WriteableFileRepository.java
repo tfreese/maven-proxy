@@ -33,6 +33,10 @@ public class WriteableFileRepository extends FileRepository {
 
         Path path = toPath(uri);
 
+        if (getLogger().isDebugEnabled()) {
+            getLogger().debug("write: {}", path);
+        }
+
         Files.createDirectories(path.getParent());
 
         try (OutputStream outputStream = new BufferedOutputStream(Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING))) {

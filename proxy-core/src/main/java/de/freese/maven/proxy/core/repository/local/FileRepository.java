@@ -35,10 +35,21 @@ public class FileRepository extends AbstractRepository implements LocalRepositor
         Path path = toPath(resource);
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("lookup: {}", path);
+            getLogger().debug("exist: {}", path);
         }
 
-        return Files.exists(path);
+        boolean exist = Files.exists(path);
+
+        if (getLogger().isDebugEnabled()) {
+            if (exist) {
+                getLogger().debug("exist - found: {}", path);
+            }
+            else {
+                getLogger().debug("exist - not found: {}", path);
+            }
+        }
+
+        return exist;
     }
 
     @Override
@@ -50,11 +61,19 @@ public class FileRepository extends AbstractRepository implements LocalRepositor
         Path path = toPath(resource);
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("lookup: {}", path);
+            getLogger().debug("getInputStream: {}", path);
         }
 
         if (Files.exists(path)) {
+            if (getLogger().isDebugEnabled()) {
+                getLogger().debug("getInputStream - found: {}", path);
+            }
+
             return new RepositoryResponse(resource, Files.size(path), new BufferedInputStream(Files.newInputStream(path)));
+        }
+
+        if (getLogger().isDebugEnabled()) {
+            getLogger().debug("getInputStream - not found: {}", path);
         }
 
         return null;

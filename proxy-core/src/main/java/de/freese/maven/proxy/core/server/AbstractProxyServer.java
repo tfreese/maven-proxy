@@ -3,8 +3,8 @@ package de.freese.maven.proxy.core.server;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.concurrent.Executor;
 
+import de.freese.maven.proxy.config.ServerConfig;
 import de.freese.maven.proxy.core.lifecycle.AbstractLifecycle;
 import de.freese.maven.proxy.core.repository.Repository;
 
@@ -15,9 +15,7 @@ public abstract class AbstractProxyServer extends AbstractLifecycle implements P
 
     private final Map<String, Repository> contextRoots = new LinkedHashMap<>();
 
-    private Executor executor;
-
-    private int port = -1;
+    private ServerConfig serverConfig;
 
     @Override
     public ProxyServer addContextRoot(final String contextRoot, final Repository repository) {
@@ -34,15 +32,8 @@ public abstract class AbstractProxyServer extends AbstractLifecycle implements P
     }
 
     @Override
-    public ProxyServer setExecutor(final Executor executor) {
-        this.executor = executor;
-
-        return this;
-    }
-
-    @Override
-    public ProxyServer setPort(final int port) {
-        this.port = port;
+    public ProxyServer setConfig(final ServerConfig serverConfig) {
+        this.serverConfig = serverConfig;
 
         return this;
     }
@@ -51,7 +42,7 @@ public abstract class AbstractProxyServer extends AbstractLifecycle implements P
     public String toString() {
         final StringBuilder sb = new StringBuilder(getClass().getSimpleName());
         sb.append(" [");
-        sb.append("port=").append(port);
+        sb.append("port=").append(serverConfig != null ? serverConfig.getPort() : "-1");
         sb.append(']');
 
         return sb.toString();
@@ -61,8 +52,11 @@ public abstract class AbstractProxyServer extends AbstractLifecycle implements P
     protected void doStart() throws Exception {
         super.doStart();
 
-        checkNotNull(executor, "Executor");
-        checkValue(port, value -> value <= 0 ? "Port has invalid range: " + value : null);
+        checkNotNull(serverConfig, "ServerConfig");
+        checkValue(serverConfig.getPort(), value -> value <= 0 ? "Port has invalid range: " + value : null);
+        checkValue(serverConfig.getThreadPoolCoreSize(), value -> value <= 0 ? "ThreadPoolCoreSize has invalid range: " + value : null);
+        checkValue(serverConfig.getThreadPoolMaxSize(), value -> value <= 0 ? "ThreadPoolMaxSize has invalid range: " + value : null);
+        checkNotNull(serverConfig.getThreadNamePattern(), "ThreadNamePattern");
         checkValue(contextRoots, value -> value.isEmpty() ? "ContextRoots are not defined" : null);
     }
 
@@ -70,11 +64,7 @@ public abstract class AbstractProxyServer extends AbstractLifecycle implements P
         return Map.copyOf(contextRoots);
     }
 
-    protected Executor getExecutor() {
-        return executor;
-    }
-
-    protected int getPort() {
-        return port;
+    protected ServerConfig getServerConfig() {
+        return serverConfig;
     }
 }

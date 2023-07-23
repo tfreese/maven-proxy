@@ -19,13 +19,31 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="port" type="ProxyPort" />
+                <xs:element name="server-config" type="ServerConfig" />
+                <xs:element name="client-config" type="ClientConfig" />
                 <xs:element name="repositories" type="Repositories" />
-                <xs:element name="file-cache" type="FileCache" minOccurs="0" />
-                <xs:element name="db-monitoring" type="DbMonitoring" minOccurs="0" />
+                <xs:element name="file-cache" type="FileCacheConfig" minOccurs="0" />
+                <xs:element name="db-monitoring" type="DbMonitoringConfig" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="ServerConfig">
+        <xs:sequence>
+            <xs:element name="port" type="ProxyPort" />
+            <xs:element name="thread-pool-core-size" type="xs:positiveInteger" />
+            <xs:element name="thread-pool-max-size" type="xs:positiveInteger" />
+            <xs:element name="thread-name-pattern" type="xs:normalizedString" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="ClientConfig">
+        <xs:sequence>
+            <xs:element name="thread-pool-core-size" type="xs:positiveInteger" />
+            <xs:element name="thread-pool-max-size" type="xs:positiveInteger" />
+            <xs:element name="thread-name-pattern" type="xs:normalizedString" />
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:simpleType name="ProxyPort">
         <xs:annotation>
@@ -58,7 +76,7 @@
         </xs:restriction>
     </xs:simpleType>
 
-    <xs:complexType name="LocalRepo">
+    <xs:complexType name="LocalRepoConfig">
         <xs:annotation>
             <xs:documentation source="description">
                 Local file Repository for deployments [file://*].
@@ -69,9 +87,14 @@
             <xs:element name="name" type="xs:normalizedString" />
             <xs:element name="path" type="FileUri" />
         </xs:sequence>
+        <xs:attribute name="writeable" type="xs:boolean" default="false">
+            <xs:annotation>
+                <xs:documentation source="description">Use the Repository für deployments.</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="RemoteRepo">
+    <xs:complexType name="RemoteRepoConfig">
         <xs:annotation>
             <xs:documentation source="description">Remote Repository for Dependencies [http://*,https://*].</xs:documentation>
         </xs:annotation>
@@ -81,7 +104,7 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="VirtualRepo">
+    <xs:complexType name="VirtualRepoConfig">
         <xs:annotation>
             <xs:documentation source="description">
                 Virtual Repository as mirror for maven [http://HOST:PORT/NAME]
@@ -99,13 +122,13 @@
             <xs:documentation source="description">Repository Declaration.</xs:documentation>
         </xs:annotation>
         <xs:sequence>
-            <xs:element name="remote" type="RemoteRepo" maxOccurs="unbounded" />
-            <xs:element name="local" type="LocalRepo" minOccurs="0" maxOccurs="unbounded" />
-            <xs:element name="virtual" type="VirtualRepo" maxOccurs="unbounded" />
+            <xs:element name="remote" type="RemoteRepoConfig" maxOccurs="unbounded" />
+            <xs:element name="local" type="LocalRepoConfig" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="virtual" type="VirtualRepoConfig" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="FileCache">
+    <xs:complexType name="FileCacheConfig">
         <xs:annotation>
             <xs:documentation source="description">Local Cache for remote Repositories.</xs:documentation>
         </xs:annotation>
@@ -123,7 +146,7 @@
         </xs:attribute>
     </xs:complexType>
 
-    <xs:complexType name="DbMonitoring">
+    <xs:complexType name="DbMonitoringConfig">
         <xs:annotation>
             <xs:documentation source="description">DB-Monitoring for the Maven-Proxy.</xs:documentation>
         </xs:annotation>

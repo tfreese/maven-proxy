@@ -23,11 +23,14 @@ import de.freese.maven.proxy.core.repository.RepositoryResponse;
 public class JreHttpServerHandler extends AbstractComponent implements HttpHandler {
 
     private static final String SERVER_NAME = "Maven-Proxy";
-
+    private final String contextRoot;
     private final Repository repository;
 
     JreHttpServerHandler(final Repository repository) {
+        super();
+
         this.repository = checkNotNull(repository, "Repository");
+        this.contextRoot = "/" + getRepository().getName();
     }
 
     @Override
@@ -80,12 +83,22 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         }
     }
 
+    protected String getContextRoot() {
+        return contextRoot;
+    }
+
     protected Repository getRepository() {
         return repository;
     }
 
+    protected URI removeContextRoot(URI uri) {
+        String path = uri.getPath().substring(getContextRoot().length());
+
+        return URI.create(path);
+    }
+
     private void handleGet(final HttpExchange exchange) throws Exception {
-        final URI uri = exchange.getRequestURI();
+        URI uri = removeContextRoot(exchange.getRequestURI());
 
         RepositoryResponse repositoryResponse = getRepository().getInputStream(uri);
 
@@ -118,7 +131,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
     }
 
     private void handleHead(final HttpExchange exchange) throws Exception {
-        final URI uri = exchange.getRequestURI();
+        URI uri = removeContextRoot(exchange.getRequestURI());
 
         boolean exist = getRepository().exist(uri);
 
@@ -132,7 +145,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
      * Deploy
      **/
     private void handlePut(final HttpExchange exchange) throws Exception {
-        final URI uri = exchange.getRequestURI();
+        URI uri = removeContextRoot(exchange.getRequestURI());
 
         try (InputStream inputStream = exchange.getRequestBody()) {
             ((LocalRepository) getRepository()).write(uri, inputStream);

@@ -7,7 +7,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Objects;
+import java.util.function.Supplier;
 
 import de.freese.maven.proxy.core.component.ProxyUtils;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
@@ -15,14 +15,14 @@ import de.freese.maven.proxy.core.repository.RepositoryResponse;
 /**
  * @author Thomas Freese
  */
-public class HttpRemoteRepository extends AbstractRemoteRepository {
+public class JreHttpRemoteRepository extends AbstractRemoteRepository {
 
-    private final HttpClient httpClient;
+    private final Supplier<HttpClient> httpClientSupplier;
 
-    public HttpRemoteRepository(final String name, final URI baseUri, final HttpClient httpClient) {
+    public JreHttpRemoteRepository(final String name, final URI baseUri, final Supplier<HttpClient> httpClientSupplier) {
         super(name, baseUri);
 
-        this.httpClient = Objects.requireNonNull(httpClient, "httpClient required");
+        this.httpClientSupplier = httpClientSupplier;
     }
 
     @Override
@@ -43,10 +43,14 @@ public class HttpRemoteRepository extends AbstractRemoteRepository {
         // @formatter:on
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug(request.toString());
+            getLogger().debug("exist - Request: {}", request.toString());
         }
 
         HttpResponse<Void> response = getHttpClient().send(request, HttpResponse.BodyHandlers.discarding());
+
+        if (getLogger().isDebugEnabled()) {
+            getLogger().debug("exist - Response: {}", response.toString());
+        }
 
         return response.statusCode() == ProxyUtils.HTTP_OK;
     }
@@ -69,10 +73,14 @@ public class HttpRemoteRepository extends AbstractRemoteRepository {
         // @formatter:on
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug(request.toString());
+            getLogger().debug("getInputStream - Request: {}", request.toString());
         }
 
         HttpResponse<InputStream> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
+
+        if (getLogger().isDebugEnabled()) {
+            getLogger().debug("getInputStream - Response: {}", response.toString());
+        }
 
         if (response.statusCode() != ProxyUtils.HTTP_OK) {
             return null;
@@ -83,7 +91,14 @@ public class HttpRemoteRepository extends AbstractRemoteRepository {
         return new RepositoryResponse(uri, contentLength, new BufferedInputStream(response.body()));
     }
 
+    @Override
+    protected void doStart() throws Exception {
+        super.doStart();
+
+        checkNotNull(httpClientSupplier, "HttpClientSupplier");
+    }
+
     protected HttpClient getHttpClient() {
-        return httpClient;
+        return httpClientSupplier.get();
     }
 }

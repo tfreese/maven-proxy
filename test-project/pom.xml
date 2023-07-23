@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>de.freese.maven.proxy</groupId>
+    <artifactId>test-project</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId} - ${project.artifactId}</name>
+    <description>Proxy Test Project</description>
+
+    <!-- mvn -s settings_proxy.xml -U clean install -->
+    <!-- mvn -s settings_proxy.xml versions:display-dependency-updates -->
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.propertiesEncoding>UTF-8</project.build.propertiesEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+        <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
+        <createChecksum>true</createChecksum>
+
+        <maven.compiler.target>20</maven.compiler.target>
+        <maven.compiler.source>20</maven.compiler.source>
+
+        <version_slf4j-api>2.0.7</version_slf4j-api>
+        <version_junit-jupiter>5.9.3</version_junit-jupiter>
+
+        <version_maven-toolchains-plugin>3.1.0</version_maven-toolchains-plugin>
+    </properties>
+
+    <distributionManagement>
+        <repository>
+            <id>repo-releases</id>
+            <url>http://localhost:7999/deploy-releases</url>
+            <name>Enthält deployte Release Artefakte</name>
+        </repository>
+        <snapshotRepository>
+            <id>repo-snapshots</id>
+            <url>http://localhost:7999/deploy-snapshots</url>
+            <name>Enthält deployte Snapshot Artefakte</name>
+        </snapshotRepository>
+        <site>
+            <id>repo-sites</id>
+            <url>http://localhost:7999/deploy-sites</url>
+            <!--            <url>file:/tmp/maven-distribution/sites/${project.version}</url>-->
+            <name>Enthält die generierten Homepages</name>
+        </site>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-toolchains-plugin</artifactId>
+                <version>${version_maven-toolchains-plugin}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>toolchain</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <toolchains>
+                        <jdk>
+                            <version>${maven.compiler.target}</version>
+                            <vendor>openjdk</vendor>
+                        </jdk>
+                    </toolchains>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- compile scope -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${version_slf4j-api}</version>
+        </dependency>
+
+        <!-- runtime scope -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${version_slf4j-api}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- provided scope -->
+        <!-- test scope -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${version_junit-jupiter}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>

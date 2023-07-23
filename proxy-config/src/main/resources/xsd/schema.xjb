@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jaxb:bindings xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
-               xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+               xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
                xmlns:proxy="http://github.com/tfreese/maven-proxy/config"
                jaxb:extensionBindingPrefixes="xjc"
@@ -14,15 +14,19 @@
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printInt" />
 
-        <jaxb:javaType name="java.util.Calendar" xmlType="xsd:date"
+        <jaxb:javaType name="int" xmlType="xs:positiveInteger"
+                       parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"
+                       printMethod="jakarta.xml.bind.DatatypeConverter.printInt" />
+        
+        <jaxb:javaType name="java.util.Calendar" xmlType="xs:date"
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseDate"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printDate" />
 
-        <jaxb:javaType name="java.util.Calendar" xmlType="xsd:dateTime"
+        <jaxb:javaType name="java.util.Calendar" xmlType="xs:dateTime"
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseDateTime"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printDateTime" />
 
-        <jaxb:javaType name="java.util.Calendar" xmlType="xsd:time"
+        <jaxb:javaType name="java.util.Calendar" xmlType="xs:time"
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseTime"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printTime" />
     </jaxb:globalBindings>

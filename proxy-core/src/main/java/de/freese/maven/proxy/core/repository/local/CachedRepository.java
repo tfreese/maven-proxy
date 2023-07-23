@@ -39,10 +39,14 @@ public class CachedRepository extends AbstractRepository implements LocalReposit
         Path path = toPath(resource);
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("lookup: {}", path);
+            getLogger().debug("exist: {}", path);
         }
 
         if (Files.exists(path)) {
+            if (getLogger().isDebugEnabled()) {
+                getLogger().debug("exist - found: {}", path);
+            }
+
             return true;
         }
 
@@ -62,13 +66,9 @@ public class CachedRepository extends AbstractRepository implements LocalReposit
 
         Path path = toPath(resource);
 
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug("lookup: {}", path);
-        }
-
         if (Files.exists(path)) {
             if (getLogger().isDebugEnabled()) {
-                getLogger().debug("use cached: {}", path);
+                getLogger().debug("getInputStream - use cached: {}", path);
             }
 
             return new RepositoryResponse(resource, Files.size(path), Files.newInputStream(path));
