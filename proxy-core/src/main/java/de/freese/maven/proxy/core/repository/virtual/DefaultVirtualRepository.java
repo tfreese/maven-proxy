@@ -16,11 +16,7 @@ public class DefaultVirtualRepository extends AbstractVirtualRepository {
     }
 
     @Override
-    public boolean exist(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return false;
-        }
-
+    protected boolean doExist(final URI resource) throws Exception {
         boolean exist = false;
 
         for (Repository repository : getRepositories()) {
@@ -40,11 +36,7 @@ public class DefaultVirtualRepository extends AbstractVirtualRepository {
     }
 
     @Override
-    public RepositoryResponse getInputStream(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return null;
-        }
-
+    protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
         RepositoryResponse response = null;
 
         for (Repository repository : getRepositories()) {

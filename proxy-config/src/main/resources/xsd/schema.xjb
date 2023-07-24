@@ -2,22 +2,20 @@
 <jaxb:bindings xmlns:jaxb="https://jakarta.ee/xml/ns/jaxb"
                xmlns:xs="http://www.w3.org/2001/XMLSchema"
                xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
-               xmlns:proxy="http://github.com/tfreese/maven-proxy/config"
-               jaxb:extensionBindingPrefixes="xjc"
                jaxb:version="3.0">
 
     <jaxb:globalBindings>
         <xjc:simple />
         <xjc:serializable uid="4711" />
 
-        <jaxb:javaType name="int" xmlType="proxy:ProxyPort"
+        <jaxb:javaType name="int" xmlType="xs:positiveInteger"
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printInt" />
 
         <jaxb:javaType name="int" xmlType="xs:positiveInteger"
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printInt" />
-        
+
         <jaxb:javaType name="java.util.Calendar" xmlType="xs:date"
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseDate"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printDate" />
@@ -30,5 +28,38 @@
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseTime"
                        printMethod="jakarta.xml.bind.DatatypeConverter.printTime" />
     </jaxb:globalBindings>
+
+    <jaxb:bindings schemaLocation="proxy-config.xsd">
+        <!--        <jaxb:bindings node="//xs:complexType[@name='Book']">-->
+        <!--            <jaxb:class name="MyBook" />-->
+        <!--        </jaxb:bindings>-->
+
+        <!--        <jaxb:bindings node="//xs:complexType[@name='StoreConfigtype']">-->
+        <!--            <jaxb:typesafeEnumClass name="StoreTypes" />-->
+        <!--        </jaxb:bindings>-->
+
+        <!--        <jaxb:bindings node="//xs:complexType[@name='ServerConfig']/xs:element[@name='port']">-->
+        <!--            &lt;!&ndash;            <jaxb:bindings node="xs:element[@name='port']">&ndash;&gt;-->
+        <!--            <jaxb:property>-->
+        <!--                <jaxb:baseType>-->
+        <!--                    <jaxb:javaType name="de.freese.maven.proxy.config.ServerConfig.port"-->
+        <!--                                   parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"-->
+        <!--                                   printMethod="jakarta.xml.bind.DatatypeConverter.printInt" />-->
+        <!--                </jaxb:baseType>-->
+        <!--            </jaxb:property>-->
+        <!--            &lt;!&ndash;            </jaxb:bindings>&ndash;&gt;-->
+        <!--        </jaxb:bindings>-->
+
+        <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='1-6']">-->
+        <!--            <jxb:typesafeEnumMember name="ONE_TO_SIX" />-->
+        <!--        </jxb:bindings>-->
+        <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='6-12']">-->
+        <!--            <jxb:typesafeEnumMember name="SIX_TO_TWELVE" />-->
+        <!--        </jxb:bindings>-->
+        <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='']">-->
+        <!--            <jxb:typesafeEnumMember name="BLANK" />-->
+        <!--        </jxb:bindings>-->
+
+    </jaxb:bindings>
 
 </jaxb:bindings>

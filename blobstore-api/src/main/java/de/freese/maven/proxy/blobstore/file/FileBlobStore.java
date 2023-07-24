@@ -10,6 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
+import java.util.Objects;
 
 import de.freese.maven.proxy.blobstore.api.AbstractBlobStore;
 import de.freese.maven.proxy.blobstore.api.Blob;
@@ -20,8 +21,12 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
  */
 public class FileBlobStore extends AbstractBlobStore {
 
+    private final URI uri;
+
     public FileBlobStore(final URI uri) {
-        super(uri);
+        super();
+
+        this.uri = Objects.requireNonNull(uri, "URI required");
     }
 
     @Override
@@ -56,6 +61,11 @@ public class FileBlobStore extends AbstractBlobStore {
         Path path = toContentPath(id);
 
         return Files.exists(path);
+    }
+
+    @Override
+    public URI getUri() {
+        return this.uri;
     }
 
     Path toContentPath(final BlobId id) {

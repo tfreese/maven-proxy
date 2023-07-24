@@ -26,10 +26,12 @@
         <maven.compiler.target>20</maven.compiler.target>
         <maven.compiler.source>20</maven.compiler.source>
 
-        <version_slf4j-api>2.0.7</version_slf4j-api>
-        <version_junit-jupiter>5.9.3</version_junit-jupiter>
+        <gradle-tooling-api.version>8.2.1</gradle-tooling-api.version>
+        <primefaces-themes.version>1.0.10</primefaces-themes.version>
+        <slf4j.version>2.0.7</slf4j.version>
+        <junit-jupiter.version>5.9.3</junit-jupiter.version>
 
-        <version_maven-toolchains-plugin>3.1.0</version_maven-toolchains-plugin>
+        <maven-toolchains-plugin.version>3.1.0</maven-toolchains-plugin.version>
     </properties>
 
     <distributionManagement>
@@ -56,7 +58,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-toolchains-plugin</artifactId>
-                <version>${version_maven-toolchains-plugin}</version>
+                <version>${maven-toolchains-plugin.version}</version>
                 <executions>
                     <execution>
                         <goals>
@@ -79,16 +81,28 @@
     <dependencies>
         <!-- compile scope -->
         <dependency>
+            <!-- Nur in https://repo.gradle.org/gradle/libs-releases -->
+            <groupId>org.gradle</groupId>
+            <artifactId>gradle-tooling-api</artifactId>
+            <version>${gradle-tooling-api.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Nur in https://repository.primefaces.org -->
+            <groupId>org.primefaces.themes</groupId>
+            <artifactId>all-themes</artifactId>
+            <version>${primefaces-themes.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${version_slf4j-api}</version>
+            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- runtime scope -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
-            <version>${version_slf4j-api}</version>
+            <version>${slf4j.version}</version>
             <scope>runtime</scope>
         </dependency>
 
@@ -97,7 +111,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>${version_junit-jupiter}</version>
+            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

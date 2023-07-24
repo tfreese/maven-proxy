@@ -27,6 +27,10 @@
             <artifactId>blobstore-api</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+        </dependency>
 
         <!-- runtime scope -->
         <dependency>

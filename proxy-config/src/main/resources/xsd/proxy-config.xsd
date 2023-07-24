@@ -22,7 +22,6 @@
                 <xs:element name="server-config" type="ServerConfig" />
                 <xs:element name="client-config" type="ClientConfig" />
                 <xs:element name="repositories" type="Repositories" />
-                <xs:element name="file-cache" type="FileCacheConfig" minOccurs="0" />
                 <xs:element name="db-monitoring" type="DbMonitoringConfig" minOccurs="0" />
             </xs:sequence>
         </xs:complexType>
@@ -30,7 +29,17 @@
 
     <xs:complexType name="ServerConfig">
         <xs:sequence>
-            <xs:element name="port" type="ProxyPort" />
+            <xs:element name="port">
+                <xs:annotation>
+                    <xs:documentation source="description">Port for the Maven-Proxy [1025-65534].</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="xs:positiveInteger">
+                        <xs:minInclusive value="1025" />
+                        <xs:maxInclusive value="65534" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
             <xs:element name="thread-pool-core-size" type="xs:positiveInteger" />
             <xs:element name="thread-pool-max-size" type="xs:positiveInteger" />
             <xs:element name="thread-name-pattern" type="xs:normalizedString" />
@@ -45,15 +54,33 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:simpleType name="ProxyPort">
+    <xs:complexType name="StoreConfig">
         <xs:annotation>
-            <xs:documentation source="description">Port for the Maven-Proxy [1025-65534].</xs:documentation>
+            <xs:documentation source="description">Configuration for caching a remote Repository</xs:documentation>
         </xs:annotation>
-        <xs:restriction base="xs:positiveInteger">
-            <xs:minExclusive value="1024" />
-            <xs:maxExclusive value="65535" />
-        </xs:restriction>
-    </xs:simpleType>
+        <xs:sequence>
+            <xs:element name="type">
+                <xs:simpleType>
+                    <xs:restriction base="xs:normalizedString">
+                        <xs:enumeration value="file" />
+                        <xs:enumeration value="jdbc" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="url">
+                <xs:simpleType>
+                    <xs:restriction base="xs:anyURI">
+                        <xs:minLength value="10" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="driverClassName" type="xs:normalizedString" minOccurs="0" />
+            <xs:element name="user" type="xs:normalizedString" minOccurs="0" />
+            <xs:element name="password" type="xs:normalizedString" minOccurs="0" />
+            <xs:element name="pool-core-size" type="xs:positiveInteger" minOccurs="0" />
+            <xs:element name="pool-max-size" type="xs:positiveInteger" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:simpleType name="FileUri">
         <xs:annotation>
@@ -78,10 +105,7 @@
 
     <xs:complexType name="LocalRepoConfig">
         <xs:annotation>
-            <xs:documentation source="description">
-                Local file Repository for deployments [file://*].
-                Like: deploy-releases, deploy-snapshots, deploy-sites
-            </xs:documentation>
+            <xs:documentation source="description">Local file Repository [file://*].</xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:element name="name" type="xs:normalizedString" />
@@ -96,11 +120,12 @@
 
     <xs:complexType name="RemoteRepoConfig">
         <xs:annotation>
-            <xs:documentation source="description">Remote Repository for Dependencies [http://*,https://*].</xs:documentation>
+            <xs:documentation source="description">Remote Repository [http://*,https://*].</xs:documentation>
         </xs:annotation>
         <xs:sequence>
             <xs:element name="name" type="xs:normalizedString" />
             <xs:element name="url" type="RemoteUri" />
+            <xs:element name="store" type="StoreConfig" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
 
@@ -126,24 +151,6 @@
             <xs:element name="local" type="LocalRepoConfig" minOccurs="0" maxOccurs="unbounded" />
             <xs:element name="virtual" type="VirtualRepoConfig" maxOccurs="unbounded" />
         </xs:sequence>
-    </xs:complexType>
-
-    <xs:complexType name="FileCacheConfig">
-        <xs:annotation>
-            <xs:documentation source="description">Local Cache for remote Repositories.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="local-url" type="FileUri">
-                <xs:annotation>
-                    <xs:documentation source="description">File Url for Cache [file://*]</xs:documentation>
-                </xs:annotation>
-            </xs:element>
-        </xs:sequence>
-        <xs:attribute name="enabled" type="xs:boolean" use="required">
-            <xs:annotation>
-                <xs:documentation source="description">Enable/Disable this service.</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="DbMonitoringConfig">

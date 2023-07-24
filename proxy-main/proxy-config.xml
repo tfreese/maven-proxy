@@ -26,20 +26,29 @@
             <url>https://repo1.maven.org/maven2</url>
         </remote>
         <remote>
-            <name>spring-release</name>
-            <url>https://repo.spring.io/release</url>
-        </remote>
-        <remote>
             <name>primefaces</name>
             <url>https://repository.primefaces.org</url>
+            <store>
+                <type>file</type>
+                <url>file:///tmp/maven-proxy/cache/primefaces</url>
+            </store>
         </remote>
         <remote>
             <name>gradle-releases</name>
             <url>https://repo.gradle.org/gradle/libs-releases</url>
-        </remote>
-        <remote>
-            <name>gradle-plugins</name>
-            <url>https://plugins.gradle.org/m2</url>
+            <!--            <store>-->
+            <!--                <type>file</type>-->
+            <!--                <url>file:///tmp/maven-proxy/cache/gradle-releases</url>-->
+            <!--            </store>-->
+            <store>
+                <type>jdbc</type>
+                <url>jdbc:hsqldb:file:/tmp/maven-proxy/database/gradle-releases;shutdown=true</url>
+                <driverClassName>org.hsqldb.jdbc.JDBCDriver</driverClassName>
+                <user>sa</user>
+                <password></password>
+                <pool-core-size>2</pool-core-size>
+                <pool-max-size>6</pool-max-size>
+            </store>
         </remote>
         <local>
             <name>third-party</name>
@@ -59,12 +68,10 @@
         </local>
         <virtual>
             <name>public</name>
-            <repository-name>third-party</repository-name>
             <repository-name>maven-central</repository-name>
-            <repository-name>spring-release</repository-name>
             <repository-name>primefaces</repository-name>
             <repository-name>gradle-releases</repository-name>
-            <repository-name>gradle-plugins</repository-name>
+            <repository-name>third-party</repository-name>
             <repository-name>deploy-releases</repository-name>
             <repository-name>deploy-snapshots</repository-name>
         </virtual>
@@ -75,10 +82,6 @@
             <repository-name>deploy-snapshots</repository-name>
         </virtual>
     </repositories>
-
-    <file-cache enabled="true">
-        <local-url>file:///tmp/maven-proxy/cache</local-url>
-    </file-cache>
 
     <db-monitoring enabled="false">
         <jdbc-url>jdbc:string</jdbc-url>

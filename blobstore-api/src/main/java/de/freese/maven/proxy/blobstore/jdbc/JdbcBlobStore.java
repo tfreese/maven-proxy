@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
@@ -37,13 +38,14 @@ public class JdbcBlobStore extends AbstractBlobStore {
         return URI.create("jdbc");
     }
 
-    private final DataSource dataSource;
+    private final Supplier<DataSource> dataSourceSupplier;
 
-    public JdbcBlobStore(DataSource dataSource) {
-        super(getUri(dataSource));
+    private URI uri;
 
-        this.dataSource = Objects.requireNonNull(dataSource, "dataSource required");
+    public JdbcBlobStore(Supplier<DataSource> dataSourceSupplier) {
+        super();
 
+        this.dataSourceSupplier = Objects.requireNonNull(dataSourceSupplier, "Supplier<DataSource> required");
     }
 
     @Override
@@ -190,6 +192,21 @@ public class JdbcBlobStore extends AbstractBlobStore {
         }
     }
 
+    @Override
+    public URI getUri() {
+        if (this.uri == null) {
+            DataSource dataSource = getDataSource();
+
+            if (dataSource == null) {
+                return URI.create("jdbc");
+            }
+
+            this.uri = getUri(dataSource);
+        }
+
+        return this.uri;
+    }
+
     InputStream inputStream(BlobId id) throws Exception {
         String sql = "select BLOB from BLOB_STORE where URI = ?";
 
@@ -279,6 +296,6 @@ public class JdbcBlobStore extends AbstractBlobStore {
     }
 
     protected DataSource getDataSource() {
-        return dataSource;
+        return dataSourceSupplier.get();
     }
 }

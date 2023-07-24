@@ -29,7 +29,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Order;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -129,9 +128,9 @@ class TestBlobStore {
         return Stream.of(
                 Arguments.of("Memory", new MemoryBlobStore()),
                 Arguments.of("File", new FileBlobStore(PATH_TEST.toUri())),
-                Arguments.of("DataSource-H2", new JdbcBlobStore(dataSourceH2)),
-                Arguments.of("DataSource-HSQLDB", new JdbcBlobStore(dataSourceHsqldb)),
-                Arguments.of("DataSource-Derby", new JdbcBlobStore(dataSourceDerby))
+                Arguments.of("DataSource-H2", new JdbcBlobStore(() -> dataSourceH2)),
+                Arguments.of("DataSource-HSQLDB", new JdbcBlobStore(() -> dataSourceHsqldb)),
+                Arguments.of("DataSource-Derby", new JdbcBlobStore(() -> dataSourceDerby))
         );
         // @formatter:on
     }
@@ -148,7 +147,6 @@ class TestBlobStore {
 
     @ParameterizedTest(name = "{index} -> {0}")
     @MethodSource("createArgumentes")
-    @Order(1)
     void testInputStream(final String name, final BlobStore blobStore) throws Exception {
         if (blobStore instanceof JdbcBlobStore dsBs) {
             dsBs.createDatabaseIfNotExist();
@@ -173,7 +171,6 @@ class TestBlobStore {
 
     @ParameterizedTest(name = "{index} -> {0}")
     @MethodSource("createArgumentes")
-    @Order(1)
     void testNotExistingUri(final String name, final BlobStore blobStore) throws Exception {
         if (blobStore instanceof JdbcBlobStore dsBs) {
             dsBs.createDatabaseIfNotExist();
@@ -197,7 +194,6 @@ class TestBlobStore {
 
     @ParameterizedTest(name = "{index} -> {0}")
     @MethodSource("createArgumentes")
-    @Order(1)
     void testOutputStream(final String name, final BlobStore blobStore) throws Exception {
         if (blobStore instanceof JdbcBlobStore jdbcBlobStore) {
             jdbcBlobStore.createDatabaseIfNotExist();
@@ -219,6 +215,12 @@ class TestBlobStore {
         }
 
         testAfterInsert(blobStore, blobId, uri, fileSize, bytes);
+    }
+
+    @ParameterizedTest(name = "{index} -> {0}")
+    @MethodSource("createArgumentes")
+    void testUri(final String name, final BlobStore blobStore) throws Exception {
+        System.out.println("name = " + name + ", blobStore = " + blobStore.getUri());
     }
 
     protected void testAfterInsert(BlobStore blobStore, BlobId blobId, URI uri, long fileSize, byte[] bytes) throws Exception {

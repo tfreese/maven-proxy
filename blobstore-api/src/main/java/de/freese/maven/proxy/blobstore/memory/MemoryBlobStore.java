@@ -16,12 +16,10 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
  * @author Thomas Freese
  */
 public class MemoryBlobStore extends AbstractBlobStore {
-    
+
     private final Map<BlobId, byte[]> cache = new HashMap<>();
 
-    public MemoryBlobStore() {
-        super(URI.create("memory"));
-    }
+    private final URI uri = URI.create("memory");
 
     @Override
     public OutputStream create(final BlobId id) throws Exception {
@@ -54,6 +52,11 @@ public class MemoryBlobStore extends AbstractBlobStore {
     @Override
     public boolean exists(final BlobId id) throws Exception {
         return cache.containsKey(id);
+    }
+
+    @Override
+    public URI getUri() {
+        return this.uri;
     }
 
     @Override

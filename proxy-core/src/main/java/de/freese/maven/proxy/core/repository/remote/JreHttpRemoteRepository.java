@@ -26,11 +26,7 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
     }
 
     @Override
-    public boolean exist(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return false;
-        }
-
+    protected boolean doExist(final URI resource) throws Exception {
         URI uri = createResourceUri(getUri(), resource);
 
         // @formatter:off
@@ -56,11 +52,7 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
     }
 
     @Override
-    public RepositoryResponse getInputStream(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return null;
-        }
-
+    protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
         URI uri = createResourceUri(getUri(), resource);
 
         // @formatter:off

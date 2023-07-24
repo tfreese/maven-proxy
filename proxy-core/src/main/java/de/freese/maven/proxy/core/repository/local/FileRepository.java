@@ -8,28 +8,26 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import de.freese.maven.proxy.core.component.HttpMethod;
+import de.freese.maven.proxy.core.repository.AbstractRepository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
 
 /**
  * @author Thomas Freese
  */
-public class FileRepository extends AbstractLocalRepository {
+public class FileRepository extends AbstractRepository {
 
     public FileRepository(final String name, final URI uri) {
         super(name, uri);
     }
 
     @Override
-    public boolean exist(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return false;
-        }
+    public boolean supports(final HttpMethod httpMethod) {
+        return HttpMethod.HEAD.equals(httpMethod) || HttpMethod.GET.equals(httpMethod);
+    }
 
+    @Override
+    protected boolean doExist(final URI resource) throws Exception {
         Path path = toPath(resource);
-
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug("exist: {}", path);
-        }
 
         boolean exist = Files.exists(path);
 
@@ -46,16 +44,8 @@ public class FileRepository extends AbstractLocalRepository {
     }
 
     @Override
-    public RepositoryResponse getInputStream(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return null;
-        }
-
+    protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
         Path path = toPath(resource);
-
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug("getInputStream: {}", path);
-        }
 
         if (Files.exists(path)) {
             if (getLogger().isDebugEnabled()) {
@@ -73,18 +63,34 @@ public class FileRepository extends AbstractLocalRepository {
     }
 
     @Override
-    public boolean supports(final HttpMethod httpMethod) {
-        return HttpMethod.HEAD.equals(httpMethod) || HttpMethod.GET.equals(httpMethod);
-    }
-
-    @Override
     protected void doStart() throws Exception {
         super.doStart();
 
         Path path = Paths.get(getUri());
 
+        if (!Files.exists(path)) {
+            Files.createDirectories(path);
+        }
+
         if (!Files.isReadable(path)) {
             throw new IllegalStateException("path not readable: " + path);
         }
+    }
+
+    protected Path toPath(final URI resource) {
+        Path relativePath = toRelativePath(resource);
+
+        return Paths.get(getUri()).resolve(relativePath);
+    }
+
+    protected Path toRelativePath(final URI resource) {
+        String uriPath = resource.getPath();
+        uriPath = uriPath.replace(' ', '_');
+
+        if (uriPath.startsWith("/")) {
+            uriPath = uriPath.substring(1);
+        }
+
+        return Paths.get(uriPath);
     }
 }

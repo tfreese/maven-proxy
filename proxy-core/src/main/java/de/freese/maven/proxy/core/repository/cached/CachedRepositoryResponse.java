@@ -1,5 +1,5 @@
 // Created: 03.05.2021
-package de.freese.maven.proxy.core.repository.local;
+package de.freese.maven.proxy.core.repository.cached;
 
 import java.io.IOException;
 import java.io.InputStream;

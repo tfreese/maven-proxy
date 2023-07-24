@@ -1,10 +1,10 @@
 // Created: 22.07.23
 package de.freese.maven.proxy.core.repository;
 
+import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
+import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.lifecycle.AbstractLifecycle;
 
 /**
@@ -24,6 +24,34 @@ public abstract class AbstractRepository extends AbstractLifecycle implements Re
     }
 
     @Override
+    public boolean exist(final URI resource) throws Exception {
+        if (!isStarted()) {
+            getLogger().warn("Component not started: {}" + getName());
+            return false;
+        }
+
+        if (getLogger().isDebugEnabled()) {
+            getLogger().debug("exist: {}", resource);
+        }
+
+        return doExist(resource);
+    }
+
+    @Override
+    public RepositoryResponse getInputStream(final URI resource) throws Exception {
+        if (!isStarted()) {
+            getLogger().warn("Component not started: {}" + getName());
+            return null;
+        }
+
+        if (getLogger().isDebugEnabled()) {
+            getLogger().debug("getInputStream: {}", resource);
+        }
+
+        return doGetInputStream(resource);
+    }
+
+    @Override
     public String getName() {
         return name;
     }
@@ -34,18 +62,34 @@ public abstract class AbstractRepository extends AbstractLifecycle implements Re
     }
 
     @Override
+    public boolean supports(final HttpMethod httpMethod) {
+        return false;
+    }
+
+    @Override
     public String toString() {
         return getName() + ": " + getUri();
     }
 
-    protected Path toRelativePath(final URI resource) {
-        String uriPath = resource.getPath();
-        uriPath = uriPath.replace(' ', '_');
-
-        if (uriPath.startsWith("/")) {
-            uriPath = uriPath.substring(1);
+    @Override
+    public void write(final URI resource, final InputStream inputStream) throws Exception {
+        if (!isStarted()) {
+            getLogger().warn("Component not started: {}" + getName());
+            return;
         }
 
-        return Paths.get(uriPath);
+        if (getLogger().isDebugEnabled()) {
+            getLogger().debug("write: {}", resource);
+        }
+
+        doWrite(resource, inputStream);
+    }
+
+    protected abstract boolean doExist(final URI resource) throws Exception;
+
+    protected abstract RepositoryResponse doGetInputStream(final URI resource) throws Exception;
+
+    protected void doWrite(final URI resource, final InputStream inputStream) throws Exception {
+        throw new UnsupportedOperationException("read only repository: " + getName() + " - " + getUri());
     }
 }

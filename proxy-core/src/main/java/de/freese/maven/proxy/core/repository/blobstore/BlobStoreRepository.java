@@ -4,14 +4,10 @@ package de.freese.maven.proxy.core.repository.blobstore;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import de.freese.maven.proxy.blobstore.api.Blob;
 import de.freese.maven.proxy.blobstore.api.BlobId;
 import de.freese.maven.proxy.blobstore.api.BlobStore;
-import de.freese.maven.proxy.blobstore.jdbc.JdbcBlobStore;
 import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.repository.AbstractRepository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
@@ -30,15 +26,12 @@ public class BlobStoreRepository extends AbstractRepository {
     }
 
     @Override
-    public boolean exist(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return false;
-        }
+    public boolean supports(final HttpMethod httpMethod) {
+        return HttpMethod.HEAD.equals(httpMethod) || HttpMethod.GET.equals(httpMethod) || HttpMethod.PUT.equals(httpMethod);
+    }
 
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug("exist: {}", resource);
-        }
-
+    @Override
+    protected boolean doExist(final URI resource) throws Exception {
         BlobId blobId = new BlobId(resource);
 
         boolean exist = getBlobStore().exists(blobId);
@@ -56,15 +49,7 @@ public class BlobStoreRepository extends AbstractRepository {
     }
 
     @Override
-    public RepositoryResponse getInputStream(final URI resource) throws Exception {
-        if (!isStarted()) {
-            return null;
-        }
-
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug("getInputStream: {}", resource);
-        }
-
+    protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
         BlobId blobId = new BlobId(resource);
 
         if (getBlobStore().exists(blobId)) {
@@ -85,49 +70,13 @@ public class BlobStoreRepository extends AbstractRepository {
     }
 
     @Override
-    public boolean supports(final HttpMethod httpMethod) {
-        return HttpMethod.HEAD.equals(httpMethod) || HttpMethod.GET.equals(httpMethod) || HttpMethod.PUT.equals(httpMethod);
-    }
-
-    @Override
-    public void write(final URI resource, final InputStream inputStream) throws Exception {
-        if (!isStarted()) {
-            return;
-        }
-
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug("write: {}", resource);
-        }
-
+    protected void doWrite(final URI resource, final InputStream inputStream) throws Exception {
         BlobId blobId = new BlobId(resource);
 
         getBlobStore().create(blobId, inputStream);
 
         if (getLogger().isDebugEnabled()) {
             getLogger().debug("written: {}", resource);
-        }
-    }
-
-    @Override
-    protected void doStart() throws Exception {
-        super.doStart();
-
-        if (getBlobStore() instanceof JdbcBlobStore jdbcBlobStore) {
-            jdbcBlobStore.createDatabaseIfNotExist();
-        }
-
-        Path path = Paths.get(getUri());
-
-        if (!Files.exists(path)) {
-            Files.createDirectories(path);
-        }
-
-        if (!Files.isReadable(path)) {
-            throw new IllegalStateException("path not readable: " + path);
-        }
-
-        if (!Files.isWritable(path)) {
-            throw new IllegalStateException("path not writeable: " + path);
         }
     }
 
