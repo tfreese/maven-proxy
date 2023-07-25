@@ -4,8 +4,8 @@ package de.freese.maven.proxy.core.repository;
 import java.io.InputStream;
 import java.net.URI;
 
-import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.lifecycle.AbstractLifecycle;
+import de.freese.maven.proxy.core.utils.HttpMethod;
 
 /**
  * @author Thomas Freese
@@ -85,9 +85,9 @@ public abstract class AbstractRepository extends AbstractLifecycle implements Re
         doWrite(resource, inputStream);
     }
 
-    protected abstract boolean doExist(final URI resource) throws Exception;
+    protected abstract boolean doExist(URI resource) throws Exception;
 
-    protected abstract RepositoryResponse doGetInputStream(final URI resource) throws Exception;
+    protected abstract RepositoryResponse doGetInputStream(URI resource) throws Exception;
 
     protected void doWrite(final URI resource, final InputStream inputStream) throws Exception {
         throw new UnsupportedOperationException("read only repository: " + getName() + " - " + getUri());

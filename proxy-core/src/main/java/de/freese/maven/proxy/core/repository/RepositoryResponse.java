@@ -1,6 +1,7 @@
 // Created: 02.05.2021
 package de.freese.maven.proxy.core.repository;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -11,7 +12,7 @@ import java.util.Objects;
  * @author Thomas Freese
  */
 public class RepositoryResponse {
-    
+
     private final long contentLength;
 
     private final InputStream inputStream;
@@ -46,7 +47,7 @@ public class RepositoryResponse {
     }
 
     public long transferTo(final OutputStream outputStream) throws IOException {
-        try (InputStream is = getInputStream()) {
+        try (InputStream is = new BufferedInputStream(getInputStream())) {
             return is.transferTo(outputStream);
         }
     }

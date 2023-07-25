@@ -1,6 +1,8 @@
 // Created: 03.05.2021
 package de.freese.maven.proxy.core.repository.cached;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -33,8 +35,8 @@ public class CachedRepositoryResponse extends RepositoryResponse {
         int read;
         long transferred = 0L;
 
-        try (InputStream inputStream = getInputStream();
-             OutputStream blobOutputStream = blobStore.create(blobId)) {
+        try (InputStream inputStream = new BufferedInputStream(getInputStream());
+             OutputStream blobOutputStream = new BufferedOutputStream(blobStore.create(blobId))) {
             while ((read = inputStream.read(buffer, 0, DEFAULT_BUFFER_SIZE)) >= 0) {
                 blobOutputStream.write(buffer, 0, read);
                 outputStream.write(buffer, 0, read);

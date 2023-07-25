@@ -1,7 +1,6 @@
 // Created: 22.07.23
 package de.freese.maven.proxy.core.repository.remote;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -9,8 +8,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.function.Supplier;
 
-import de.freese.maven.proxy.core.component.ProxyUtils;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
+import de.freese.maven.proxy.core.utils.ProxyUtils;
 
 /**
  * @author Thomas Freese
@@ -80,7 +79,7 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
 
         long contentLength = response.headers().firstValueAsLong(ProxyUtils.HTTP_HEADER_CONTENT_LENGTH).orElse(0);
 
-        return new RepositoryResponse(uri, contentLength, new BufferedInputStream(response.body()));
+        return new RepositoryResponse(uri, contentLength, response.body());
     }
 
     @Override

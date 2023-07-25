@@ -1,5 +1,5 @@
 // Created: 22.07.23
-package de.freese.maven.proxy.core.component;
+package de.freese.maven.proxy.core.utils;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;

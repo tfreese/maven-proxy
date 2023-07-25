@@ -5,9 +5,9 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.repository.AbstractRepository;
 import de.freese.maven.proxy.core.repository.Repository;
+import de.freese.maven.proxy.core.utils.HttpMethod;
 
 /**
  * @author Thomas Freese

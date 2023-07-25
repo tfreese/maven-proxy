@@ -1,5 +1,5 @@
 // Created: 19.07.23
-package de.freese.maven.proxy.core.component;
+package de.freese.maven.proxy.core.utils;
 
 /**
  * @author Thomas Freese

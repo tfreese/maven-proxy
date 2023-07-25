@@ -6,7 +6,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import de.freese.maven.proxy.core.component.AbstractComponent;
-import de.freese.maven.proxy.core.component.Locks;
+import de.freese.maven.proxy.core.utils.Locks;
 
 /**
  * @author Thomas Freese

@@ -1,16 +1,15 @@
 // Created: 23.07.23
 package de.freese.maven.proxy.core.repository.blobstore;
 
-import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URI;
 
 import de.freese.maven.proxy.blobstore.api.Blob;
 import de.freese.maven.proxy.blobstore.api.BlobId;
 import de.freese.maven.proxy.blobstore.api.BlobStore;
-import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.repository.AbstractRepository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
+import de.freese.maven.proxy.core.utils.HttpMethod;
 
 /**
  * @author Thomas Freese
@@ -59,7 +58,7 @@ public class BlobStoreRepository extends AbstractRepository {
 
             Blob blob = getBlobStore().get(blobId);
 
-            return new RepositoryResponse(resource, blob.getLength(), new BufferedInputStream(blob.getInputStream()));
+            return new RepositoryResponse(resource, blob.getLength(), blob.getInputStream());
         }
 
         if (getLogger().isDebugEnabled()) {

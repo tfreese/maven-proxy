@@ -39,7 +39,7 @@
                         </executions>
                         <configuration>
                             <skip>false</skip>
-                            <mainClass>de.freese.maven.proxy.MavenProxyLauncher</mainClass>
+                            <mainClass>de.freese.maven.proxy.main.MavenProxyLauncher</mainClass>
                             <outputDirectory>app</outputDirectory>
                             <classifier>spring</classifier>
                             <includeSystemScope>true</includeSystemScope>
@@ -82,6 +82,8 @@
     </profiles>
 
     <build>
+        <finalName>maven-proxy</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -99,6 +101,37 @@
                     </filesets>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>**/*.properties</exclude>
+                        <exclude>**/*.xml</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>assembly-parent</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>app</outputDirectory>
+                            <!--                            <finalName>maven-proxy</finalName>-->
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>src/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -108,6 +141,10 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>proxy-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
         </dependency>
 
         <!-- runtime scope -->

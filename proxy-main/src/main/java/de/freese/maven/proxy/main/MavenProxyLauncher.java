@@ -1,7 +1,6 @@
 // Created: 22.07.23
 package de.freese.maven.proxy.main;
 
-import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -19,6 +18,7 @@ import jakarta.xml.bind.Unmarshaller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import de.freese.maven.proxy.config.ProxyConfig;
 import de.freese.maven.proxy.config.RepositoryBuilder;
@@ -27,6 +27,7 @@ import de.freese.maven.proxy.core.lifecycle.LifecycleManager;
 import de.freese.maven.proxy.core.repository.RepositoryManager;
 import de.freese.maven.proxy.core.server.ProxyServer;
 import de.freese.maven.proxy.core.server.jre.JreHttpServer;
+import de.freese.maven.proxy.core.utils.ProxyUtils;
 
 /**
  * @author Thomas Freese
@@ -36,7 +37,17 @@ public final class MavenProxyLauncher {
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenProxyLauncher.class);
 
     public static void main(String[] args) throws Exception {
-        //        System.out.println(System.getProperty("user.dir"));
+        LOGGER.info("Working Directory: {}", System.getProperty("user.dir"));
+        LOGGER.info("Process User: {}", System.getProperty("user.name"));
+
+        // Redirect Java-Util-Logger to Slf4J.
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+
+        if (LoggerFactory.getLogger("HTTP").isDebugEnabled()) {
+            //            System.setProperty("jdk.httpclient.HttpClient.log", "all");
+            System.setProperty("jdk.httpclient.HttpClient.log", "requests");
+        }
 
         Path configPath = findConfigFile(args);
 
@@ -45,10 +56,9 @@ public final class MavenProxyLauncher {
             return;
         }
 
-        LOGGER.info("Process User: {}", System.getProperty("user.name"));
-
-        URL url = Thread.currentThread().getContextClassLoader().getSystemResource("xsd/proxy-config.xsd");
-        Source schemaFile = new StreamSource(new File(url.toURI()));
+        URL url = ProxyUtils.getDefaultClassLoader().getSystemResource("xsd/proxy-config.xsd");
+        LOGGER.info("XSD-Url: {}", url);
+        Source schemaFile = new StreamSource(url.openStream());
 
         Source xmlFile = new StreamSource(configPath.toFile());
 
@@ -125,7 +135,9 @@ public final class MavenProxyLauncher {
         }
     }
 
-    private static Path findConfigFile(final String[] args) {
+    private static Path findConfigFile(final String[] args) throws Exception {
+        LOGGER.info("Try to find proxy-config.xml");
+
         if (args != null && args.length == 2) {
             String parameter = args[0];
 
@@ -133,17 +145,37 @@ public final class MavenProxyLauncher {
                 return Paths.get(args[1]);
             }
         }
-        else if (System.getProperty("maven-proxy.config") != null) {
-            return Paths.get(System.getProperty("maven-proxy.config"));
+
+        String propertyValue = System.getProperty("maven-proxy.config");
+
+        if (propertyValue != null) {
+            return Paths.get(propertyValue);
         }
-        else if (System.getenv("maven-proxy.config") != null) {
-            return Paths.get(System.getenv("maven-proxy.config"));
+
+        String envValue = System.getenv("maven-proxy.config");
+
+        if (envValue != null) {
+            return Paths.get(envValue);
+        }
+
+        URL url = ProxyUtils.getDefaultClassLoader().getSystemResource("proxy-config.xml");
+
+        if (url != null) {
+            return Paths.get(url.toURI());
+        }
+
+        Path path = Path.of("proxy-config.xml");
+
+        if (Files.exists(path)) {
+            return path;
         }
 
         LOGGER.error("no maven-proxy config file found");
         LOGGER.error("define it as programm argument: -maven-proxy.config <ABSOLUTE_PATH>/proxy-config.xml");
         LOGGER.error("or as system property: -Dmaven-proxy.config=<ABSOLUTE_PATH>/proxy-config.xml");
         LOGGER.error("or as environment variable: set/export maven-proxy.config=<ABSOLUTE_PATH>/proxy-config.xml");
+        LOGGER.error("or in Classpath");
+        LOGGER.error("or in directory of the Proxy-Jar.");
 
         throw new IllegalStateException("no maven-proxy config file found");
     }

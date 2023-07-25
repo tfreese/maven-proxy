@@ -3,8 +3,8 @@ package de.freese.maven.proxy.core.repository.remote;
 
 import java.net.URI;
 
-import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.repository.AbstractRepository;
+import de.freese.maven.proxy.core.utils.HttpMethod;
 
 /**
  * @author Thomas Freese

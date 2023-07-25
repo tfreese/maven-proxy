@@ -11,6 +11,8 @@ import java.util.concurrent.TimeUnit;
 
 import de.freese.maven.proxy.config.ClientConfig;
 import de.freese.maven.proxy.core.lifecycle.AbstractLifecycle;
+import de.freese.maven.proxy.core.utils.MavenProxyThreadFactory;
+import de.freese.maven.proxy.core.utils.ProxyUtils;
 
 /**
  * @author Thomas Freese

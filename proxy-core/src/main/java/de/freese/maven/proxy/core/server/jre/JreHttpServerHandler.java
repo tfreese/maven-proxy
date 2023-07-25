@@ -13,10 +13,10 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import de.freese.maven.proxy.core.component.AbstractComponent;
-import de.freese.maven.proxy.core.component.HttpMethod;
-import de.freese.maven.proxy.core.component.ProxyUtils;
 import de.freese.maven.proxy.core.repository.Repository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
+import de.freese.maven.proxy.core.utils.HttpMethod;
+import de.freese.maven.proxy.core.utils.ProxyUtils;
 
 /**
  * @author Thomas Freese
@@ -24,7 +24,9 @@ import de.freese.maven.proxy.core.repository.RepositoryResponse;
 public class JreHttpServerHandler extends AbstractComponent implements HttpHandler {
 
     private static final String SERVER_NAME = "Maven-Proxy";
+
     private final String contextRoot;
+
     private final Repository repository;
 
     JreHttpServerHandler(final Repository repository) {
@@ -58,9 +60,11 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
 
         try {
             if (HttpMethod.GET.equals(httpMethod)) {
+                consumeAndCloseRequestStream(exchange);
                 handleGet(exchange);
             }
             else if (HttpMethod.HEAD.equals(httpMethod)) {
+                consumeAndCloseRequestStream(exchange);
                 handleHead(exchange);
             }
             else if (HttpMethod.PUT.equals(httpMethod)) {
@@ -71,7 +75,6 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
 
                 exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_SERVER, SERVER_NAME);
                 exchange.sendResponseHeaders(ProxyUtils.HTTP_SERVICE_UNAVAILABLE, 0);
-                exchange.getResponseBody().close();
             }
         }
         catch (IOException ex) {
@@ -81,6 +84,19 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         catch (Exception ex) {
             getLogger().error(ex.getMessage(), ex);
             throw new IOException(ex);
+        }
+        finally {
+            exchange.getResponseBody().close();
+            exchange.close();
+        }
+    }
+
+    /**
+     * See Documentation of {@link HttpExchange}.
+     */
+    protected void consumeAndCloseRequestStream(HttpExchange exchange) throws IOException {
+        try (InputStream inputStream = exchange.getRequestBody()) {
+            inputStream.transferTo(OutputStream.nullOutputStream());
         }
     }
 
@@ -92,13 +108,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         return repository;
     }
 
-    protected URI removeContextRoot(URI uri) {
-        String path = uri.getPath().substring(getContextRoot().length());
-
-        return URI.create(path);
-    }
-
-    private void handleGet(final HttpExchange exchange) throws Exception {
+    protected void handleGet(final HttpExchange exchange) throws Exception {
         URI uri = removeContextRoot(exchange.getRequestURI());
 
         RepositoryResponse repositoryResponse = getRepository().getInputStream(uri);
@@ -131,7 +141,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         }
     }
 
-    private void handleHead(final HttpExchange exchange) throws Exception {
+    protected void handleHead(final HttpExchange exchange) throws Exception {
         URI uri = removeContextRoot(exchange.getRequestURI());
 
         boolean exist = getRepository().exist(uri);
@@ -145,7 +155,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
     /**
      * Deploy
      **/
-    private void handlePut(final HttpExchange exchange) throws Exception {
+    protected void handlePut(final HttpExchange exchange) throws Exception {
         URI uri = removeContextRoot(exchange.getRequestURI());
 
         try (InputStream inputStream = new BufferedInputStream(exchange.getRequestBody())) {
@@ -154,5 +164,11 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
 
         exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_SERVER, SERVER_NAME);
         exchange.sendResponseHeaders(ProxyUtils.HTTP_OK, -1);
+    }
+
+    protected URI removeContextRoot(URI uri) {
+        String path = uri.getPath().substring(getContextRoot().length());
+
+        return URI.create(path);
     }
 }

@@ -4,8 +4,8 @@ package de.freese.maven.proxy.core.repository;
 import java.io.InputStream;
 import java.net.URI;
 
-import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.lifecycle.Lifecycle;
+import de.freese.maven.proxy.core.utils.HttpMethod;
 
 /**
  * @author Thomas Freese

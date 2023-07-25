@@ -1,15 +1,14 @@
 // Created: 22.07.23
 package de.freese.maven.proxy.core.repository.local;
 
-import java.io.BufferedInputStream;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import de.freese.maven.proxy.core.component.HttpMethod;
 import de.freese.maven.proxy.core.repository.AbstractRepository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
+import de.freese.maven.proxy.core.utils.HttpMethod;
 
 /**
  * @author Thomas Freese
@@ -52,7 +51,7 @@ public class FileRepository extends AbstractRepository {
                 getLogger().debug("getInputStream - found: {}", path);
             }
 
-            return new RepositoryResponse(resource, Files.size(path), new BufferedInputStream(Files.newInputStream(path)));
+            return new RepositoryResponse(resource, Files.size(path), Files.newInputStream(path));
         }
 
         if (getLogger().isDebugEnabled()) {

@@ -1,17 +1,16 @@
 // Created: 03.05.2021
 package de.freese.maven.proxy.core.repository.cached;
 
-import java.io.BufferedInputStream;
 import java.net.URI;
 
 import de.freese.maven.proxy.blobstore.api.Blob;
 import de.freese.maven.proxy.blobstore.api.BlobId;
 import de.freese.maven.proxy.blobstore.api.BlobStore;
-import de.freese.maven.proxy.core.component.HttpMethod;
-import de.freese.maven.proxy.core.component.ProxyUtils;
 import de.freese.maven.proxy.core.repository.AbstractRepository;
 import de.freese.maven.proxy.core.repository.Repository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
+import de.freese.maven.proxy.core.utils.HttpMethod;
+import de.freese.maven.proxy.core.utils.ProxyUtils;
 
 /**
  * @author Thomas Freese
@@ -72,7 +71,7 @@ public class CachedRepository extends AbstractRepository {
 
             Blob blob = getBlobStore().get(blobId);
 
-            return new RepositoryResponse(resource, blob.getLength(), new BufferedInputStream(blob.getInputStream()));
+            return new RepositoryResponse(resource, blob.getLength(), blob.getInputStream());
         }
         else {
             if (getLogger().isDebugEnabled()) {

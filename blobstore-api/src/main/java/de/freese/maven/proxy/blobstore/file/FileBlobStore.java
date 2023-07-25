@@ -1,7 +1,6 @@
 // Created: 18.09.2019
 package de.freese.maven.proxy.blobstore.file;
 
-import java.io.BufferedOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
@@ -35,7 +34,7 @@ public class FileBlobStore extends AbstractBlobStore {
 
         Files.createDirectories(path.getParent());
 
-        return new BufferedOutputStream(Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING));
+        return Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
     }
 
     @Override

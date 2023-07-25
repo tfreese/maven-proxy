@@ -1,5 +1,5 @@
 // Created: 18.09.2019
-package de.freese.maven.proxy.core.component;
+package de.freese.maven.proxy.core.utils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -62,6 +62,39 @@ public final class ProxyUtils {
         return "application/octet-stream";
         //        return MIMETYPES_FILE_TYPE_MAP.getContentType(fileName);
         //        return FILE_NAME_MAP.getContentTypeFor(fileName);
+    }
+
+    public static ClassLoader getDefaultClassLoader() {
+        ClassLoader classLoader = null;
+
+        try {
+            classLoader = Thread.currentThread().getContextClassLoader();
+        }
+        catch (Exception ex) {
+            // Cannot access thread context ClassLoader - falling back...
+        }
+
+        if (classLoader == null) {
+            // No thread context class loader -> use class loader of this class.
+            try {
+                classLoader = ProxyUtils.class.getClassLoader();
+            }
+            catch (Exception ex) {
+                // Cannot access class loader of this class.
+            }
+        }
+
+        if (classLoader == null) {
+            // getClassLoader() returning null indicates the bootstrap ClassLoader
+            try {
+                classLoader = ClassLoader.getSystemClassLoader();
+            }
+            catch (Exception ex) {
+                // Cannot access system ClassLoader - oh well, maybe the caller can live with null...
+            }
+        }
+
+        return classLoader;
     }
 
     public static void setupProxy() throws UnknownHostException {
@@ -129,7 +162,8 @@ public final class ProxyUtils {
                 // URLConnection connection = url.openConnection();
 
                 try (InputStream response = connection.getInputStream();
-                     BufferedReader in = new BufferedReader(new InputStreamReader(response, StandardCharsets.UTF_8))) {
+                     InputStreamReader inputStreamReader = new InputStreamReader(response, StandardCharsets.UTF_8);
+                     BufferedReader in = new BufferedReader(inputStreamReader)) {
                     String line = null;
 
                     while ((line = in.readLine()) != null) {
@@ -143,6 +177,10 @@ public final class ProxyUtils {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public static void shutdown(final ExecutorService executorService) {
+        shutdown(executorService, LoggerFactory.getLogger(ProxyUtils.class));
     }
 
     public static void shutdown(final ExecutorService executorService, final Logger logger) {
@@ -189,10 +227,6 @@ public final class ProxyUtils {
             // Preserve interrupt status.
             Thread.currentThread().interrupt();
         }
-    }
-
-    public static void shutdown(final ExecutorService executorService) {
-        shutdown(executorService, LoggerFactory.getLogger(ProxyUtils.class));
     }
 
     /**

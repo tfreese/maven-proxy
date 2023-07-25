@@ -36,13 +36,9 @@
         <remote>
             <name>gradle-releases</name>
             <url>https://repo.gradle.org/gradle/libs-releases</url>
-            <!--            <store>-->
-            <!--                <type>file</type>-->
-            <!--                <url>file:///tmp/maven-proxy/cache/gradle-releases</url>-->
-            <!--            </store>-->
             <store>
                 <type>jdbc</type>
-                <url>jdbc:hsqldb:file:/tmp/maven-proxy/database/gradle-releases;shutdown=true</url>
+                <url>jdbc:hsqldb:file:/tmp/maven-proxy/database/gradle-releases/gradle-releases;shutdown=true</url>
                 <driverClassName>org.hsqldb.jdbc.JDBCDriver</driverClassName>
                 <user>sa</user>
                 <password></password>

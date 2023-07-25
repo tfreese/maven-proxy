@@ -61,7 +61,7 @@ public class DatasourceComponent extends AbstractLifecycle {
         config.setMinimumIdle(storeConfig.getPoolCoreSize());
         config.setMaximumPoolSize(storeConfig.getPoolMaxSize());
         config.setPoolName(poolName);
-        config.setAutoCommit(true);
+        config.setAutoCommit(false);
 
         this.dataSource = new HikariDataSource(config);
     }
@@ -69,6 +69,17 @@ public class DatasourceComponent extends AbstractLifecycle {
     @Override
     protected void doStop() throws Exception {
         super.doStop();
+
+        //        try (Connection connection = dataSource.getConnection()) {
+        //            DatabaseMetaData metaData = connection.getMetaData();
+        //
+        //            if ("h2".equalsIgnoreCase(metaData.getDatabaseProductName())) {
+        //                try (Statement statement = connection.createStatement()) {
+        //                    getLogger().info("Execute shutdown command for Database 'h2'");
+        //                    statement.execute("SHUTDOWN");
+        //                }
+        //            }
+        //        }
 
         if (dataSource instanceof AutoCloseable ac) {
             ac.close();

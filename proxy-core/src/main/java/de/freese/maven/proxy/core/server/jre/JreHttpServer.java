@@ -12,9 +12,9 @@ import java.util.concurrent.TimeUnit;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpServer;
 
-import de.freese.maven.proxy.core.component.MavenProxyThreadFactory;
-import de.freese.maven.proxy.core.component.ProxyUtils;
 import de.freese.maven.proxy.core.server.AbstractProxyServer;
+import de.freese.maven.proxy.core.utils.MavenProxyThreadFactory;
+import de.freese.maven.proxy.core.utils.ProxyUtils;
 
 /**
  * @author Thomas Freese
@@ -50,7 +50,8 @@ public class JreHttpServer extends AbstractProxyServer {
             httpContexts.add(httpContext);
         });
 
-        new Thread(this.httpServer::start, "Maven-Proxy").start();
+        this.httpServer.start();
+        //        new Thread(this.httpServer::start, "Maven-Proxy").start();
     }
 
     @Override

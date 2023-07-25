@@ -1,5 +1,5 @@
 // Created: 21.09.2019
-package de.freese.maven.proxy.core.component;
+package de.freese.maven.proxy.core.utils;
 
 import java.util.Objects;
 import java.util.concurrent.Executors;

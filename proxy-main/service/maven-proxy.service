@@ -17,8 +17,8 @@ Type=simple
 # The configuration file application.properties should be here:
 WorkingDirectory=/opt/jvmapps/maven-proxy/
 
-# journalctl -u mavenProxy.service -f
-# journalctl -u mavenProxy.service -r
+# journalctl -u maven-proxy.service -f
+# journalctl -u maven-proxy.service -r
 SyslogIdentifier=maven-proxy
 StandardOutput=journal
 StandardError=journal
