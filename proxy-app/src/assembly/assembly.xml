@@ -5,26 +5,33 @@
 
     <id>maven-proxy</id>
 
+    <includeBaseDirectory>false</includeBaseDirectory>
+
     <formats>
         <format>dir</format>
     </formats>
-
-    <includeBaseDirectory>false</includeBaseDirectory>
 
     <fileSets>
         <fileSet>
             <directory>src/assembly</directory>
             <outputDirectory>bin</outputDirectory>
             <includes>
-                <include>*.bat</include>
-                <include>*.sh</include>
+                <!--                <include>**/*.bat</include>-->
+                <include>**/maven-proxy.sh</include>
             </includes>
         </fileSet>
         <fileSet>
             <directory>src/main/resources</directory>
             <outputDirectory>resources</outputDirectory>
             <includes>
-                <include>**/*</include>
+                <include>**/log4j2.xml</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.basedir}/../proxy-main/src/main/resources</directory>
+            <outputDirectory>resources</outputDirectory>
+            <includes>
+                <include>**/proxy-config.xml</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -38,9 +45,11 @@
     <dependencySets>
         <dependencySet>
             <outputDirectory>libs</outputDirectory>
-            <!--            <excludes>-->
-            <!--                <exclude>${project.groupId}:${project.artifactId}</exclude>-->
-            <!--            </excludes>-->
+            <scope>runtime</scope>
+            <useProjectArtifact>false</useProjectArtifact>
+            <excludes>
+                <exclude>org.slf4j:slf4j-simple</exclude>
+            </excludes>
         </dependencySet>
     </dependencySets>
 

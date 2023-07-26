@@ -51,9 +51,12 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         if (!getRepository().supports(httpMethod)) {
             getLogger().error("Repository does not support HttpMethod: {} -{}", getRepository().getName(), httpMethod);
 
+            consumeAndCloseRequestStream(exchange);
+
             exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_SERVER, SERVER_NAME);
             exchange.sendResponseHeaders(ProxyUtils.HTTP_SERVICE_UNAVAILABLE, 0);
             exchange.getResponseBody().close();
+            exchange.close();
 
             return;
         }
@@ -72,6 +75,8 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
             }
             else {
                 getLogger().error("unknown method: {} from {}", httpMethod, exchange.getRemoteAddress());
+
+                consumeAndCloseRequestStream(exchange);
 
                 exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_SERVER, SERVER_NAME);
                 exchange.sendResponseHeaders(ProxyUtils.HTTP_SERVICE_UNAVAILABLE, 0);

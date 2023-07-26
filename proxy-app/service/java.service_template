@@ -13,6 +13,7 @@ User=jvmapps
 Group=jvmapps
 
 Type=simple
+#Type=forking
 
 # The configuration file application.properties should be here:
 WorkingDirectory=/opt/jvmapps/spring-mvc
@@ -48,6 +49,8 @@ LimitNPROC=500000
 #LimitCPU=, LimitFSIZE=, LimitDATA=, LimitSTACK=, LimitCORE=, LimitRSS=, LimitNOFILE=, LimitAS=, LimitNPROC=, LimitMEMLOCK=, LimitLOCKS=, LimitSIGPENDING=, LimitMSGQUEUE=, LimitNICE=, LimitRTPRIO=, LimitRTTIME=¶
 
 Environment="ENV=stage"
+
+PIDFile=/opt/jvmapps/someDir/some.pid
 
 # Run ExecStartPre with root-permissions
 # + = root-permissions

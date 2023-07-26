@@ -30,6 +30,8 @@ Restart=no
 #Restart=on-failure
 #RestartSec=5
 
+PIDFile=/opt/jvmapps/maven-proxy/maven-proxy.pid
+
 # Run ExecStartPre with root-permissions
 # + = root-permissions
 #ExecStartPre=+/bin/mkdir -p /opt/jvmapps/maven-proxy/repository

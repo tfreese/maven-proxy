@@ -33,12 +33,6 @@
         </dependency>
 
         <!-- runtime scope -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <scope>runtime</scope>
-        </dependency>
-
         <!-- provided scope -->
         <!-- test scope -->
     </dependencies>

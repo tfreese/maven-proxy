@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.freese.maven.proxy</groupId>
+        <artifactId>maven-proxy</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>proxy-app</artifactId>
+    <packaging>jar</packaging>
+
+    <name>${project.groupId} - ${project.artifactId}</name>
+    <description>Proxy application project</description>
+
+    <profiles>
+        <profile>
+            <id>copy-to-apps</id>
+            <build>
+                <plugins>
+                    <!-- spring-boot:run -->
+                    <!-- spring-boot:repackage für executable jar -->
+                    <!-- mvn package enthält hiermit schon spring-boot:repackage-->
+                    <!-- mvn spring-boot:run -Dspring-boot.run.jvmArguments="-Dmavenproxy.fileCache=/mnt/ssd850/maven-proxy/repository" -->
+                    <plugin>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-maven-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>repackage</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>repackage</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <skip>false</skip>
+                            <mainClass>de.freese.maven.proxy.main.MavenProxyLauncher</mainClass>
+                            <outputDirectory>app</outputDirectory>
+                            <classifier>spring</classifier>
+                            <includeSystemScope>true</includeSystemScope>
+                            <jvmArguments>
+                                -Dmavenproxy.port=7999
+                                -Xms32m
+                                -Xmx64m
+                                -XX:TieredStopAtLevel=1
+                                -Djava.security.egd=file:/dev/./urandom
+                                -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=5005
+                            </jvmArguments>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>deploy-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <configuration>
+                                    <skip>false</skip>
+                                    <target>
+                                        <copy file="app/${project.artifactId}-${project.version}-spring.jar"
+                                              tofile="/opt/jvmapps/maven-proxy/maven-proxy.jar"
+                                              overwrite="true"
+                                              verbose="true"
+                                        />
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+    <build>
+        <finalName>maven-proxy</finalName>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <configuration>
+                    <skip>false</skip>
+                    <filesets>
+                        <fileset>
+                            <directory>${project.basedir}/app</directory>
+                            <includes>
+                                <include>**/*</include>
+                            </includes>
+                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                    </filesets>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>assembly-parent</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.basedir}/app</outputDirectory>
+                            <!--                            <finalName>maven-proxy</finalName>-->
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptors>
+                                <descriptor>${project.basedir}/src/assembly/assembly.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- compile scope -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>proxy-main</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- runtime scope -->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j2-impl</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- provided scope -->
+        <!-- test scope -->
+    </dependencies>
+
+</project>
