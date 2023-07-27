@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Configuration [
         <!ENTITY level_ROOT "INFO">
-        <!ENTITY level_APPLICATION "DEBUG">
+        <!ENTITY level_APPLICATION "INFO">
         ]
         >
 <!-- shutdownHook="disable" verhindert, das der DB-Appender versucht was zu schreiben, obwohl die Datasource bereits geschlossen ist. -->
@@ -12,23 +12,22 @@
         <!-- %date{yyyy-MM-dd HH:mm:ss.SSS}; [%-7X{USER}]; [%method:%line] -->
         <!-- Default if empty: %equals{%X{USER}}{}{SYSTEM}; %X{USER:-SYSTEM} funktioniert nicht mehr ? -->
         <!-- Postfix if not empty: %notEmpty{%X{USER} -} -->
-        <Property name="PATTERN" value="%date{yyyy-MM-dd HH:mm:ss.SSS} - %5level - [%15.-15thread] - %replace{%-30.-30logger{0}}{ }{.} - %message%n" />
+        <Property name="PATTERN">%date{yyyy-MM-dd HH:mm:ss.SSS} - %5level - [%15.-15thread] - %replace{%-30.-30logger{0}}{ }{.} - %message%n</Property>
 
-        <Property name="LOG_DIR" value="/opt/jvmapps/maven-proxy/logs" />
-        <Property name="LOG_FILE" value="maven-proxy" />
+        <Property name="LOG_DIR">/opt/jvmapps/maven-proxy/logs</Property>
+        <Property name="LOG_FILE">maven-proxy</Property>
 
-        <Property name="LOG_DIRECTORY" value="${LOG_DIR:-${sys:user.home}/.java-apps/logs}" />
-        <Property name="LOG_FILE_NAME" value="${LOG_FILE:-application}" />
+        <Property name="LOG_DIRECTORY">${LOG_DIR:-${sys:user.home}/.java-apps/logs}</Property>
+        <Property name="LOG_FILE_NAME">${LOG_FILE:-application}</Property>
 
         <Property name="fileRollover">${LOG_FILE_MAX_HISTORY:-30}</Property>
         <Property name="fileMaxSize">${LOG_FILE_MAX_SIZE:-10 MB}</Property>
         <Property name="fileMaxAge">${LOG_FILE_MAX_AGE:-30d}</Property>
-
     </Properties>
 
     <!-- ######################################################################################################################################## -->
 
-    <BurstFilter level="DEBUG" rate="2" maxBurst="3" />
+    <!--    <BurstFilter level="DEBUG" rate="2" maxBurst="3" />-->
 
     <!-- ######################################################################################################################################## -->
 
@@ -48,8 +47,7 @@
         </Console>
 
         <!-- /${date:yyyy-MM}/ -->
-        <RollingFile name="FILE" fileName="${LOG_DIRECTORY}/${LOG_FILE_NAME}.log"
-                     filePattern="${LOG_DIRECTORY}/archiv/${LOG_FILE_NAME}_%d{yyyy-MM-dd}_%i.log.gz">
+        <RollingFile name="FILE" fileName="${LOG_DIRECTORY}/${LOG_FILE_NAME}.log" filePattern="${LOG_DIRECTORY}/archiv/${LOG_FILE_NAME}_%d{yyyy-MM-dd}_%i.log.gz">
             <append>true</append>
             <immediateFlush>false</immediateFlush>
             <bufferSize>4096</bufferSize>
@@ -78,23 +76,19 @@
     <!-- ######################################################################################################################################## -->
 
     <Loggers>
+        <Logger name="jdk.httpclient.HttpClient" additivity="false" level="&level_APPLICATION;">
+            <AppenderRef ref="FILE_ASYNC" />
+        </Logger>
+
+        <Logger name="de.freese" additivity="false" level="&level_APPLICATION;">
+            <AppenderRef ref="FILE_ASYNC" />
+        </Logger>
+
         <Root level="&level_ROOT;">
             <AppenderRef ref="CONSOLE_STD" />
             <AppenderRef ref="CONSOLE_ERR" />
             <AppenderRef ref="FILE_ASYNC" />
         </Root>
-
-        <Logger name="HTTP" additivity="false" level="&level_APPLICATION;">
-            <AppenderRef ref="CONSOLE_STD" />
-            <AppenderRef ref="CONSOLE_ERR" />
-            <AppenderRef ref="FILE_ASYNC" />
-        </Logger>
-
-        <Logger name="de.freese" additivity="false" level="&level_APPLICATION;">
-            <AppenderRef ref="CONSOLE_STD" />
-            <AppenderRef ref="CONSOLE_ERR" />
-            <AppenderRef ref="FILE_ASYNC" />
-        </Logger>
     </Loggers>
 
 </Configuration>

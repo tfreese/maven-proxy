@@ -25,12 +25,6 @@
             <outputDirectory>resources</outputDirectory>
             <includes>
                 <include>**/log4j2.xml</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.basedir}/../proxy-main/src/main/resources</directory>
-            <outputDirectory>resources</outputDirectory>
-            <includes>
                 <include>**/proxy-config.xml</include>
             </includes>
         </fileSet>
@@ -47,9 +41,9 @@
             <outputDirectory>libs</outputDirectory>
             <scope>runtime</scope>
             <useProjectArtifact>false</useProjectArtifact>
-            <excludes>
-                <exclude>org.slf4j:slf4j-simple</exclude>
-            </excludes>
+            <!--            <excludes>-->
+            <!--                <exclude>org.slf4j:slf4j-simple</exclude>-->
+            <!--            </excludes>-->
         </dependencySet>
     </dependencySets>
 

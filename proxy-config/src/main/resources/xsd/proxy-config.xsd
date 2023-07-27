@@ -22,7 +22,7 @@
                 <xs:element name="server-config" type="ServerConfig" />
                 <xs:element name="client-config" type="ClientConfig" />
                 <xs:element name="repositories" type="Repositories" />
-                <xs:element name="db-monitoring" type="DbMonitoringConfig" minOccurs="0" />
+                <!--                <xs:element name="db-monitoring" type="DbMonitoringConfig" minOccurs="0" />-->
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -153,26 +153,26 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="DbMonitoringConfig">
-        <xs:annotation>
-            <xs:documentation source="description">DB-Monitoring for the Maven-Proxy.</xs:documentation>
-        </xs:annotation>
-        <xs:sequence>
-            <xs:element name="jdbc-url">
-                <xs:simpleType>
-                    <xs:restriction base="xs:normalizedString">
-                        <xs:minLength value="10" />
-                        <xs:pattern value="jdbc:.*" />
-                    </xs:restriction>
-                </xs:simpleType>
-            </xs:element>
-        </xs:sequence>
-        <xs:attribute name="enabled" type="xs:boolean" use="required">
-            <xs:annotation>
-                <xs:documentation source="description">Enable/Disable this service.</xs:documentation>
-            </xs:annotation>
-        </xs:attribute>
-    </xs:complexType>
+    <!--    <xs:complexType name="DbMonitoringConfig">-->
+    <!--        <xs:annotation>-->
+    <!--            <xs:documentation source="description">DB-Monitoring for the Maven-Proxy.</xs:documentation>-->
+    <!--        </xs:annotation>-->
+    <!--        <xs:sequence>-->
+    <!--            <xs:element name="jdbc-url">-->
+    <!--                <xs:simpleType>-->
+    <!--                    <xs:restriction base="xs:normalizedString">-->
+    <!--                        <xs:minLength value="10" />-->
+    <!--                        <xs:pattern value="jdbc:.*" />-->
+    <!--                    </xs:restriction>-->
+    <!--                </xs:simpleType>-->
+    <!--            </xs:element>-->
+    <!--        </xs:sequence>-->
+    <!--        <xs:attribute name="enabled" type="xs:boolean" use="required">-->
+    <!--            <xs:annotation>-->
+    <!--                <xs:documentation source="description">Enable/Disable this service.</xs:documentation>-->
+    <!--            </xs:annotation>-->
+    <!--        </xs:attribute>-->
+    <!--    </xs:complexType>-->
 
     <!--    <xs:simpleType name="RepositoryUri">-->
     <!--        <xs:annotation>-->

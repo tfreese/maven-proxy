@@ -1,5 +1,5 @@
 // Created: 24.07.23
-package de.freese.maven.proxy.config;
+package de.freese.maven.proxy.core;
 
 import java.net.URI;
 
@@ -8,6 +8,10 @@ import org.slf4j.LoggerFactory;
 
 import de.freese.maven.proxy.blobstore.file.FileBlobStore;
 import de.freese.maven.proxy.blobstore.jdbc.JdbcBlobStore;
+import de.freese.maven.proxy.config.LocalRepoConfig;
+import de.freese.maven.proxy.config.RemoteRepoConfig;
+import de.freese.maven.proxy.config.StoreConfig;
+import de.freese.maven.proxy.config.VirtualRepoConfig;
 import de.freese.maven.proxy.core.component.BlobStoreComponent;
 import de.freese.maven.proxy.core.component.DatasourceComponent;
 import de.freese.maven.proxy.core.component.JreHttpClientComponent;

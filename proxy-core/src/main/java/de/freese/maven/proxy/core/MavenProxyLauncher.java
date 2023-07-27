@@ -1,6 +1,7 @@
 // Created: 22.07.23
-package de.freese.maven.proxy.main;
+package de.freese.maven.proxy.core;
 
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import de.freese.maven.proxy.config.ProxyConfig;
-import de.freese.maven.proxy.config.RepositoryBuilder;
 import de.freese.maven.proxy.core.component.JreHttpClientComponent;
 import de.freese.maven.proxy.core.lifecycle.LifecycleManager;
 import de.freese.maven.proxy.core.repository.RepositoryManager;
@@ -44,23 +44,23 @@ public final class MavenProxyLauncher {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
 
-        if (LoggerFactory.getLogger("HTTP").isDebugEnabled()) {
+        if (LoggerFactory.getLogger("jdk.httpclient.HttpClient").isDebugEnabled()) {
             //            System.setProperty("jdk.httpclient.HttpClient.log", "all");
             System.setProperty("jdk.httpclient.HttpClient.log", "requests");
         }
 
-        Path configPath = findConfigFile(args);
+        URI configUri = findConfigFile(args);
 
-        if (!Files.exists(configPath)) {
-            LOGGER.error("maven-proxy config file not exist: {}", configPath);
-            return;
-        }
+        //        if (!Files.exists(Paths.get(configUri))) {
+        //            LOGGER.error("maven-proxy config file not exist: {}", configUri);
+        //            return;
+        //        }
 
         URL url = ProxyUtils.getDefaultClassLoader().getSystemResource("xsd/proxy-config.xsd");
         LOGGER.info("XSD-Url: {}", url);
         Source schemaFile = new StreamSource(url.openStream());
 
-        Source xmlFile = new StreamSource(configPath.toFile());
+        Source xmlFile = new StreamSource(configUri.toURL().openStream());
 
         // Validate Schema.
         SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
@@ -135,39 +135,39 @@ public final class MavenProxyLauncher {
         }
     }
 
-    private static Path findConfigFile(final String[] args) throws Exception {
+    private static URI findConfigFile(final String[] args) throws Exception {
         LOGGER.info("Try to find proxy-config.xml");
 
         if (args != null && args.length == 2) {
             String parameter = args[0];
 
             if ("-maven-proxy.config".equals(parameter)) {
-                return Paths.get(args[1]);
+                return Paths.get(args[1]).toUri();
             }
         }
 
         String propertyValue = System.getProperty("maven-proxy.config");
 
         if (propertyValue != null) {
-            return Paths.get(propertyValue);
+            return Paths.get(propertyValue).toUri();
         }
 
         String envValue = System.getenv("maven-proxy.config");
 
         if (envValue != null) {
-            return Paths.get(envValue);
+            return Paths.get(envValue).toUri();
         }
 
         URL url = ProxyUtils.getDefaultClassLoader().getSystemResource("proxy-config.xml");
 
         if (url != null) {
-            return Paths.get(url.toURI());
+            return url.toURI();
         }
 
         Path path = Path.of("proxy-config.xml");
 
         if (Files.exists(path)) {
-            return path;
+            return path.toUri();
         }
 
         LOGGER.error("no maven-proxy config file found");

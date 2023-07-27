@@ -8,7 +8,7 @@
               xsi:schemaLocation="http://github.com/tfreese/maven-proxy/config https://raw.githubusercontent.com/tfreese/maven-proxy/master/proxy-main/proxy-config.xml">
 
     <server-config>
-        <port>7998</port>
+        <port>7999</port>
         <thread-pool-core-size>2</thread-pool-core-size>
         <thread-pool-max-size>6</thread-pool-max-size>
         <thread-name-pattern>http-server-%d</thread-name-pattern>
@@ -32,23 +32,23 @@
         <remote>
             <name>primefaces</name>
             <url>https://repository.primefaces.org</url>
-            <store>
-                <type>file</type>
-                <url>file:///tmp/maven-proxy/cache/primefaces</url>
-            </store>
+            <!--            <store>-->
+            <!--                <type>file</type>-->
+            <!--                <url>file:///tmp/maven-proxy/cache/primefaces</url>-->
+            <!--            </store>-->
         </remote>
         <remote>
             <name>gradle-releases</name>
             <url>https://repo.gradle.org/gradle/libs-releases</url>
-            <store>
-                <type>jdbc</type>
-                <url>jdbc:hsqldb:file:/tmp/maven-proxy/database/gradle-releases/gradle-releases;shutdown=true</url>
-                <driverClassName>org.hsqldb.jdbc.JDBCDriver</driverClassName>
-                <user>sa</user>
-                <password></password>
-                <pool-core-size>2</pool-core-size>
-                <pool-max-size>6</pool-max-size>
-            </store>
+            <!--            <store>-->
+            <!--                <type>jdbc</type>-->
+            <!--                <url>jdbc:hsqldb:file:/opt/jvmapps/maven-proxy/database/gradle-releases/gradle-releases;shutdown=true</url>-->
+            <!--                <driverClassName>org.hsqldb.jdbc.JDBCDriver</driverClassName>-->
+            <!--                <user>sa</user>-->
+            <!--                <password></password>-->
+            <!--                <pool-core-size>2</pool-core-size>-->
+            <!--                <pool-max-size>6</pool-max-size>-->
+            <!--            </store>-->
         </remote>
         <local>
             <name>third-party</name>
@@ -56,36 +56,32 @@
         </local>
         <local writeable="true">
             <name>deploy-releases</name>
-            <path>file:///tmp/maven-proxy/deploy-releases</path>
+            <path>file:///opt/jvmapps/maven-proxy/work/deploy-releases</path>
         </local>
         <local writeable="true">
             <name>deploy-snapshots</name>
-            <path>file:///tmp/maven-proxy/deploy-snapshots</path>
+            <path>file:///opt/jvmapps/maven-proxy/work/deploy-snapshots</path>
         </local>
         <local writeable="true">
             <name>deploy-sites</name>
-            <path>file:///tmp/maven-proxy/deploy-sites</path>
+            <path>file:///opt/jvmapps/maven-proxy/work/deploy-sites</path>
         </local>
         <virtual>
             <name>public</name>
             <repository-name>maven-central</repository-name>
-            <!--            <repository-name>spring-release</repository-name>-->
+            <repository-name>spring-release</repository-name>
             <repository-name>primefaces</repository-name>
             <repository-name>gradle-releases</repository-name>
             <repository-name>third-party</repository-name>
             <repository-name>deploy-releases</repository-name>
             <repository-name>deploy-snapshots</repository-name>
         </virtual>
-        <virtual>
-            <name>public-local</name>
-            <repository-name>third-party</repository-name>
-            <repository-name>deploy-releases</repository-name>
-            <repository-name>deploy-snapshots</repository-name>
-        </virtual>
+        <!--        <virtual>-->
+        <!--            <name>public-local</name>-->
+        <!--            <repository-name>third-party</repository-name>-->
+        <!--            <repository-name>deploy-releases</repository-name>-->
+        <!--            <repository-name>deploy-snapshots</repository-name>-->
+        <!--        </virtual>-->
     </repositories>
-
-    <!--    <db-monitoring enabled="false">-->
-    <!--        <jdbc-url>jdbc:string</jdbc-url>-->
-    <!--    </db-monitoring>-->
 
 </proxy-config>

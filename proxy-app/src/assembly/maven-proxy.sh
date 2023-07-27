@@ -22,7 +22,7 @@ start()
     if [ "$IS_RUNNING" == "0" ]; then
         echo -n "Starting Maven-Proxy";
 
-        java -cp "../$BASEDIR/libs/*:../$BASEDIR/resources" de.freese.maven.proxy.main.MavenProxyLauncher >> ../logs/maven-proxy.log 2>&1 &
+        java -cp "../$BASEDIR/libs/*:../$BASEDIR/resources" de.freese.maven.proxy.core.MavenProxyLauncher >> "$BASEDIR/../logs/console.log" 2>&1 &
 
         echo $! > $PID_FILE && chmod 600 $PID_FILE;
         echo " with PID: $(cat $PID_FILE)";
