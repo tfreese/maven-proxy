@@ -2,6 +2,8 @@
 package de.freese.maven.proxy.core.component;
 
 import java.io.Closeable;
+import java.sql.Connection;
+import java.sql.Statement;
 
 import javax.sql.DataSource;
 
@@ -70,16 +72,17 @@ public class DatasourceComponent extends AbstractLifecycle {
     protected void doStop() throws Exception {
         super.doStop();
 
-        //        try (Connection connection = dataSource.getConnection()) {
-        //            DatabaseMetaData metaData = connection.getMetaData();
-        //
-        //            if ("h2".equalsIgnoreCase(metaData.getDatabaseProductName())) {
-        //                try (Statement statement = connection.createStatement()) {
-        //                    getLogger().info("Execute shutdown command for Database 'h2'");
-        //                    statement.execute("SHUTDOWN");
-        //                }
-        //            }
-        //        }
+        try (Connection connection = dataSource.getConnection()) {
+            String productName = connection.getMetaData().getDatabaseProductName().toLowerCase();
+
+            // Handled already by hsql with 'shutdown=true'.
+            if (productName.contains("h2") || productName.contains("hsql")) {
+                try (Statement statement = connection.createStatement()) {
+                    getLogger().info("Execute shutdown command for Database '{}'", productName);
+                    statement.execute("SHUTDOWN COMPACT");
+                }
+            }
+        }
 
         if (dataSource instanceof AutoCloseable ac) {
             ac.close();
