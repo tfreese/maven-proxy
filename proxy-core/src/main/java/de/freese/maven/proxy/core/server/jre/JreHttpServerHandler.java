@@ -49,7 +49,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         }
 
         if (!getRepository().supports(httpMethod)) {
-            getLogger().error("Repository does not support HttpMethod: {} -{}", getRepository().getName(), httpMethod);
+            getLogger().error("Repository does not support HttpMethod: {} - {}", getRepository().getName(), httpMethod);
 
             consumeAndCloseRequestStream(exchange);
 

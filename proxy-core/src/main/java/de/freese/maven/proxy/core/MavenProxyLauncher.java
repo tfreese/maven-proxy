@@ -6,7 +6,6 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Objects;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -22,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 
 import de.freese.maven.proxy.config.ProxyConfig;
+import de.freese.maven.proxy.config.Repositories;
 import de.freese.maven.proxy.core.component.JreHttpClientComponent;
 import de.freese.maven.proxy.core.lifecycle.LifecycleManager;
 import de.freese.maven.proxy.core.repository.RepositoryManager;
@@ -86,34 +86,21 @@ public final class MavenProxyLauncher {
         JreHttpClientComponent httpClientComponent = new JreHttpClientComponent(proxyConfig.getClientConfig());
         lifecycleManager.add(httpClientComponent);
 
-        ProxyServer proxyServer = new JreHttpServer().setConfig(proxyConfig.getServerConfig());
-
         RepositoryManager repositoryManager = new RepositoryManager();
+        Repositories repositories = proxyConfig.getRepositories();
 
-        // @formatter:off
         // LocalRepository
-        proxyConfig.getRepositories().getLocals().stream()
-                .map(localRepoConfig -> RepositoryBuilder.buildLocal(localRepoConfig, lifecycleManager, repositoryManager))
-                .filter(Objects::nonNull)
-                .forEach(repository -> proxyServer.addContextRoot(repository.getName(), repository))
-        ;
+        repositories.getLocals().forEach(localRepoConfig -> RepositoryBuilder.buildLocal(localRepoConfig, lifecycleManager, repositoryManager));
 
         // RemoteRepository
-        proxyConfig.getRepositories().getRemotes().stream()
-                .map(remoteRepoConfig -> RepositoryBuilder.buildRemote(remoteRepoConfig, lifecycleManager, repositoryManager, httpClientComponent))
-                .filter(Objects::nonNull)
-                .forEach(repository -> proxyServer.addContextRoot(repository.getName(), repository))
-        ;
+        repositories.getRemotes().forEach(remoteRepoConfig -> RepositoryBuilder.buildRemote(remoteRepoConfig, lifecycleManager, repositoryManager, httpClientComponent));
 
         // VirtualRepository
-        proxyConfig.getRepositories().getVirtuals().stream()
-                .map(virtualRepoConfig -> RepositoryBuilder.buildVirtual(virtualRepoConfig, lifecycleManager, repositoryManager))
-                .filter(Objects::nonNull)
-                .forEach(repository -> proxyServer.addContextRoot(repository.getName(), repository))
-        ;
-        // @formatter:on
+        repositories.getVirtuals().forEach(virtualRepoConfig -> RepositoryBuilder.buildVirtual(virtualRepoConfig, lifecycleManager, repositoryManager));
 
         // Server at last
+        ProxyServer proxyServer = new JreHttpServer().setConfig(proxyConfig.getServerConfig());
+        repositoryManager.getRepositories().forEach(repo -> proxyServer.addContextRoot(repo.getName(), repo));
         lifecycleManager.add(proxyServer);
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {

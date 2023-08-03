@@ -42,7 +42,7 @@ public class JreHttpServer extends AbstractProxyServer {
         this.httpServer.setExecutor(executorService);
 
         getContextRoots().forEach((contextRoot, repository) -> {
-            String path = "/" + contextRoot;
+            String path = contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
 
             getLogger().info("add contextRoot '{}' for {}", path, repository.getClass().getSimpleName());
 
@@ -58,6 +58,7 @@ public class JreHttpServer extends AbstractProxyServer {
     protected void doStop() throws Exception {
         super.doStop();
 
+        this.httpContexts.clear();
         this.httpServer.stop(3);
 
         ProxyUtils.shutdown(this.executorService, getLogger());

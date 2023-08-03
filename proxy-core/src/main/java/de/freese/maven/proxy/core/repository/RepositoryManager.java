@@ -2,7 +2,9 @@
 package de.freese.maven.proxy.core.repository;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 import de.freese.maven.proxy.core.component.AbstractComponent;
 
@@ -23,6 +25,10 @@ public class RepositoryManager extends AbstractComponent {
         repositories.put(repository.getName(), repository);
 
         return this;
+    }
+
+    public Stream<Repository> getRepositories() {
+        return repositories.values().stream().filter(Objects::nonNull);
     }
 
     public Repository getRepository(String name) {

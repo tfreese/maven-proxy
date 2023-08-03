@@ -14,7 +14,7 @@ import java.util.Objects;
  * @author Thomas Freese
  */
 public class BlobId implements Serializable, Comparable<BlobId> {
-    
+
     @Serial
     private static final long serialVersionUID = -5581749917166864024L;
 
@@ -26,17 +26,11 @@ public class BlobId implements Serializable, Comparable<BlobId> {
         this.uri = Objects.requireNonNull(uri, "uri required");
     }
 
-    /**
-     * @see Comparable#compareTo(Object)
-     */
     @Override
     public int compareTo(final BlobId o) {
         return this.uri.compareTo(o.uri);
     }
 
-    /**
-     * @see Object#equals(Object)
-     */
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -56,17 +50,11 @@ public class BlobId implements Serializable, Comparable<BlobId> {
         return this.uri;
     }
 
-    /**
-     * @see Object#hashCode()
-     */
     @Override
     public int hashCode() {
         return this.uri.hashCode();
     }
 
-    /**
-     * @see Object#toString()
-     */
     @Override
     public String toString() {
         return this.uri.toString();
