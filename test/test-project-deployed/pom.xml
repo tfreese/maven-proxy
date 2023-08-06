@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>de.freese.maven.proxy</groupId>
+        <artifactId>test</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <!--    <groupId>de.freese.maven.proxy</groupId>-->
+    <artifactId>test-project-deployed</artifactId>
+    <!--    <version>0.0.1-SNAPSHOT</version>-->
+    <packaging>jar</packaging>
+
+    <name>${project.groupId} - ${project.artifactId}</name>
+    <description>Proxy Test Project (Deployed)</description>
+
+    <repositories>
+        <repository>
+            <id>snapshot</id>
+            <name>snapshot</name>
+            <url>http://localhost:7999/deploy-snapshots</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <!-- compile scope -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>test-project</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- runtime scope -->
+        <!-- provided scope -->
+        <!-- test scope -->
+    </dependencies>
+
+</project>

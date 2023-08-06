@@ -122,6 +122,7 @@ public final class RepositoryBuilder {
             }
 
             lifecycleManager.add(virtualRepository);
+            repositoryManager.add(virtualRepository);
 
             return virtualRepository;
         }

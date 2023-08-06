@@ -8,7 +8,7 @@
               xsi:schemaLocation="http://github.com/tfreese/maven-proxy/config https://raw.githubusercontent.com/tfreese/maven-proxy/master/proxy-main/proxy-config.xml">
 
     <server-config>
-        <port>7998</port>
+        <port>7999</port>
         <thread-pool-core-size>2</thread-pool-core-size>
         <thread-pool-max-size>6</thread-pool-max-size>
         <thread-name-pattern>http-server-%d</thread-name-pattern>

@@ -1,18 +1,25 @@
 package de.freese.maven.proxy.blobstore.jdbc;
 
+import java.io.BufferedReader;
 import java.io.FilterInputStream;
 import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -144,12 +151,52 @@ public class JdbcBlobStore extends AbstractBlobStore {
             return;
         }
 
-        // LENGTH bigint not null,
-        String createSql = "create table BLOB_STORE (URI varchar(1000) not null primary key, BLOB blob not null)";
+        getLogger().info("Lookup for blobstore.sql");
+        URL url = Thread.currentThread().getContextClassLoader().getResource("jdbc/blobstore.sql");
+
+        if (url == null) {
+            throw new SQLException("no sql script found");
+        }
+
+        getLogger().info("SQL found: {}", url);
 
         try (Connection connection = getDataSource().getConnection();
-             Statement statement = connection.createStatement()) {
-            statement.execute(createSql);
+             Statement statement = connection.createStatement();
+             InputStream inputStream = url.openStream();
+             InputStreamReader inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
+             BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
+
+            // @formatter:off
+            List<String> scriptLines = bufferedReader.lines()
+                    .map(String::strip)
+                    .filter(l -> !l.isEmpty())
+                    .filter(l -> !l.startsWith("--"))
+                    .filter(l -> !l.startsWith("#"))
+                    .map(l -> l.replace("\n", " ").replace("\r", " "))
+                    .map(String::strip)
+                    .collect(Collectors.toList());
+            // @formatter:on
+
+            List<String> sqls = new ArrayList<>();
+            sqls.add(scriptLines.get(0));
+
+            // SQLs ending with ';'.
+            for (int i = 1; i < scriptLines.size(); i++) {
+                String prevSql = sqls.get(sqls.size() - 1);
+                String line = scriptLines.get(i);
+
+                if (!prevSql.endsWith(";")) {
+                    sqls.set(sqls.size() - 1, prevSql + line);
+                }
+                else {
+                    sqls.add(line);
+                }
+            }
+
+            for (String sql : sqls) {
+                getLogger().info("execute: {}", sql);
+                statement.execute(sql.replace(";", ""));
+            }
         }
     }
 

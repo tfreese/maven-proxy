@@ -2,13 +2,27 @@
 package de.freese.maven.proxy.core;
 
 import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Thomas Freese
  */
 public final class Misc {
     public static void main(String[] args) throws Exception {
-        testUrl();
+        //        testUrl();
+        removeSnapshotTimestamp();
+    }
+
+    private static void removeSnapshotTimestamp() throws Exception {
+        Pattern pattern = Pattern.compile("\\d{8}\\.\\d{6}-\\d");
+        Matcher matcher = pattern.matcher("/de/freese/maven/proxy/test-project/0.0.1-SNAPSHOT/test-project-0.0.1-20230806.084242-1.pom");
+
+        if (matcher.find()) {
+            System.out.println(matcher.group());
+        }
+
+        System.out.println(matcher.replaceAll("SNAPSHOT"));
     }
 
     private static void testUrl() throws Exception {

@@ -40,15 +40,15 @@
         <remote>
             <name>gradle-releases</name>
             <url>https://repo.gradle.org/gradle/libs-releases</url>
-            <!--            <store>-->
-            <!--                <type>jdbc</type>-->
-            <!--                <url>jdbc:hsqldb:file:/opt/jvmapps/maven-proxy/database/gradle-releases/gradle-releases;shutdown=true</url>-->
-            <!--                <driverClassName>org.hsqldb.jdbc.JDBCDriver</driverClassName>-->
-            <!--                <user>sa</user>-->
-            <!--                <password></password>-->
-            <!--                <pool-core-size>2</pool-core-size>-->
-            <!--                <pool-max-size>6</pool-max-size>-->
-            <!--            </store>-->
+            <store>
+                <type>jdbc</type>
+                <url>jdbc:hsqldb:file:/opt/jvmapps/maven-proxy/database/gradle-releases/gradle-releases;shutdown=true</url>
+                <driverClassName>org.hsqldb.jdbc.JDBCDriver</driverClassName>
+                <user>sa</user>
+                <password></password>
+                <pool-core-size>2</pool-core-size>
+                <pool-max-size>6</pool-max-size>
+            </store>
         </remote>
         <local>
             <name>third-party</name>

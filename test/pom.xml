@@ -5,15 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>de.freese.maven.proxy</groupId>
-    <artifactId>test-project</artifactId>
+    <artifactId>test</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>${project.groupId} - ${project.artifactId}</name>
-    <description>Proxy Test Project</description>
+    <description>Proxy Test</description>
 
-    <!-- mvn -s settings_proxy.xml -U clean install -->
-    <!-- mvn -s settings_proxy.xml versions:display-dependency-updates -->
+    <!-- mvn -f test-project/pom.xml -s settings_proxy.xml -U clean install -->
+    <!-- mvn -f test-project/pom.xml -s settings_proxy.xml versions:display-dependency-updates -->
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -78,36 +78,8 @@
         </plugins>
     </build>
 
-    <dependencies>
-        <!-- compile scope -->
-        <dependency>
-            <!-- Nur in https://repo.gradle.org/gradle/libs-releases -->
-            <groupId>org.gradle</groupId>
-            <artifactId>gradle-tooling-api</artifactId>
-            <version>${gradle-tooling-api.version}</version>
-        </dependency>
-        <dependency>
-            <!-- Nur in https://repository.primefaces.org -->
-            <groupId>org.primefaces.themes</groupId>
-            <artifactId>all-themes</artifactId>
-            <version>${primefaces-themes.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-
-        <!-- runtime scope -->
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>${slf4j.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-
-        <!-- provided scope -->
-        <!-- test scope -->
-    </dependencies>
-
+    <modules>
+        <module>test-project</module>
+        <module>test-project-deployed</module>
+    </modules>
 </project>

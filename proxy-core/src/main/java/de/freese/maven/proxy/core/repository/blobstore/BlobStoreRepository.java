@@ -3,6 +3,8 @@ package de.freese.maven.proxy.core.repository.blobstore;
 
 import java.io.InputStream;
 import java.net.URI;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.freese.maven.proxy.blobstore.api.Blob;
 import de.freese.maven.proxy.blobstore.api.BlobId;
@@ -15,6 +17,8 @@ import de.freese.maven.proxy.core.utils.HttpMethod;
  * @author Thomas Freese
  */
 public class BlobStoreRepository extends AbstractRepository {
+
+    private static final Pattern PATTERN_SNAPSHOT_TIMESTAMP = Pattern.compile("\\d{8}\\.\\d{6}-\\d{1,}");
 
     private final BlobStore blobStore;
 
@@ -31,7 +35,7 @@ public class BlobStoreRepository extends AbstractRepository {
 
     @Override
     protected boolean doExist(final URI resource) throws Exception {
-        BlobId blobId = new BlobId(resource);
+        BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
 
         boolean exist = getBlobStore().exists(blobId);
 
@@ -49,7 +53,7 @@ public class BlobStoreRepository extends AbstractRepository {
 
     @Override
     protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
-        BlobId blobId = new BlobId(resource);
+        BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
 
         if (getBlobStore().exists(blobId)) {
             if (getLogger().isDebugEnabled()) {
@@ -70,7 +74,7 @@ public class BlobStoreRepository extends AbstractRepository {
 
     @Override
     protected void doWrite(final URI resource, final InputStream inputStream) throws Exception {
-        BlobId blobId = new BlobId(resource);
+        BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
 
         getBlobStore().create(blobId, inputStream);
 
@@ -81,5 +85,24 @@ public class BlobStoreRepository extends AbstractRepository {
 
     protected BlobStore getBlobStore() {
         return blobStore;
+    }
+
+    protected URI removeSnapshotTimestamp(URI uri) {
+        if (!uri.getPath().contains("SNAPSHOT")) {
+            return uri;
+        }
+
+        String uriValue = uri.toString();
+        Matcher matcher = PATTERN_SNAPSHOT_TIMESTAMP.matcher(uriValue);
+
+        if (!matcher.find()) {
+            return uri;
+        }
+
+        uriValue = matcher.replaceFirst("SNAPSHOT");
+
+        getLogger().info("rewrite {} -> {}", uri, uriValue);
+
+        return URI.create(uriValue);
     }
 }
