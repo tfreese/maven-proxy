@@ -15,9 +15,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
+import java.util.Scanner;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -167,35 +166,26 @@ public class JdbcBlobStore extends AbstractBlobStore {
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
             // @formatter:off
-            List<String> scriptLines = bufferedReader.lines()
-                    .map(String::strip)
+            String script = bufferedReader.lines()
+                    .filter(Objects::nonNull)
                     .filter(l -> !l.isEmpty())
                     .filter(l -> !l.startsWith("--"))
                     .filter(l -> !l.startsWith("#"))
-                    .map(l -> l.replace("\n", " ").replace("\r", " "))
+                    //.map(l -> l.replace("( ", " ").replace(" )", ")").replace("  "," "))
                     .map(String::strip)
-                    .collect(Collectors.toList());
+                    .filter(l -> !l.isEmpty())
+                    .collect(Collectors.joining(" "));
             // @formatter:on
 
-            List<String> sqls = new ArrayList<>();
-            sqls.add(scriptLines.get(0));
-
             // SQLs ending with ';'.
-            for (int i = 1; i < scriptLines.size(); i++) {
-                String prevSql = sqls.get(sqls.size() - 1);
-                String line = scriptLines.get(i);
+            try (Scanner scanner = new Scanner(script)) {
+                scanner.useDelimiter(";");
 
-                if (!prevSql.endsWith(";")) {
-                    sqls.set(sqls.size() - 1, prevSql + line);
+                while (scanner.hasNext()) {
+                    String sql = scanner.next().strip();
+                    getLogger().info("execute: {}", sql);
+                    statement.execute(sql);
                 }
-                else {
-                    sqls.add(line);
-                }
-            }
-
-            for (String sql : sqls) {
-                getLogger().info("execute: {}", sql);
-                statement.execute(sql.replace(";", ""));
             }
         }
     }

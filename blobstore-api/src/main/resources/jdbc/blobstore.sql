@@ -5,5 +5,5 @@ create table BLOB_STORE (
     BLOB blob not null
 );
 
-ALTER TABLE BLOB_STORE ADD CONSTRAINT BLOB_STORE_CK_URI CHECK(LENGTH(TRIM(URI)) > 0);
---CREATE INDEX BLOB_STORE_IDX_URI ON BLOB_STORE (URI);
+alter table BLOB_STORE add constraint BLOB_STORE_CK_URI check(length(trim(URI)) > 0);
+--create index BLOB_STORE_IDX_URI on BLOB_STORE (URI);
