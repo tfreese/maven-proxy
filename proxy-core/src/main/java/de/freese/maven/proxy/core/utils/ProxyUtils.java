@@ -135,9 +135,6 @@ public final class ProxyUtils {
         // con.setRequestProperty("Proxy-Authorization", "Basic " + encoded);
 
         java.net.Authenticator.setDefault(new java.net.Authenticator() {
-            /**
-             * @see java.net.Authenticator#getPasswordAuthentication()
-             */
             @Override
             protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(userID, password.toCharArray());
