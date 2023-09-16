@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="proxy-app: copy-to-apps" type="MavenRunConfiguration" factoryName="Maven">
+  <configuration default="false" name="proxy-app - deploy-app" type="MavenRunConfiguration" factoryName="Maven">
     <MavenSettings>
       <option name="myGeneralSettings" />
       <option name="myRunnerSettings" />
@@ -18,7 +18,7 @@
           <option name="pomFileName" />
           <option name="profilesMap">
             <map>
-              <entry key="copy-to-apps" value="true" />
+              <entry key="deploy-app" value="true" />
             </map>
           </option>
           <option name="projectsCmdOptionValues">

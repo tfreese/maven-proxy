@@ -18,7 +18,7 @@
 
     <profiles>
         <profile>
-            <id>copy-to-apps</id>
+            <id>deploy-app</id>
             <build>
                 <plugins>
                     <plugin>
@@ -27,7 +27,7 @@
                         <executions>
                             <execution>
                                 <id>deploy-maven-proxy</id>
-                                <phase>package</phase>
+                                <phase>install</phase>
                                 <goals>
                                     <goal>run</goal>
                                 </goals>
@@ -54,7 +54,6 @@
                                               verbose="true">
                                             <fileset dir="${project.basedir}/app/maven-proxy/resources" />
                                         </sync>
-
                                     </target>
                                 </configuration>
                             </execution>
@@ -73,14 +72,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
                 <configuration>
-                    <skip>false</skip>
                     <filesets>
                         <fileset>
                             <directory>${project.basedir}/app</directory>
-                            <includes>
-                                <include>**/*</include>
-                            </includes>
-                            <followSymlinks>false</followSymlinks>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/build</directory>
+                        </fileset>
+                        <fileset>
+                            <directory>${project.basedir}/.gradle</directory>
                         </fileset>
                     </filesets>
                 </configuration>

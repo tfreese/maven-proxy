@@ -84,6 +84,10 @@
             <AppenderRef ref="FILE_ASYNC" />
         </Logger>
 
+        <Logger name="com.zaxxer" additivity="false" level="&level_APPLICATION;">
+            <AppenderRef ref="FILE_ASYNC" />
+        </Logger>
+
         <Root level="&level_ROOT;">
             <AppenderRef ref="CONSOLE_STD" />
             <AppenderRef ref="CONSOLE_ERR" />

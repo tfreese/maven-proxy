@@ -45,10 +45,10 @@
     </developers>
 
     <modules>
-        <module>proxy-config</module>
-        <module>proxy-main</module>
         <module>blobstore-api</module>
+        <module>proxy-config</module>
         <module>proxy-core</module>
+        <module>proxy-ide</module>
         <module>proxy-app</module>
         <module>test</module>
     </modules>
