@@ -56,7 +56,9 @@ tasks.register("build-app") {
     group = "Proxy"
 
     doLast {
-        println("build proxy")
+        println("build " + project.name)
+
+//        Provider<Directory> appFolder = layout.projectDirectory.dir("app")
 
         copy {
             from layout.projectDirectory.dir("service").file("maven-proxy.sh")
@@ -81,26 +83,35 @@ tasks.register("deploy-app") {
     group = "Proxy"
 
     doLast {
-        println("deploy proxy")
-
-//        sync {
-//            from layout.projectDirectory.dir("app").dir("maven-proxy").dir("bin")
-//            into "/opt/jvmapps/maven-proxy/bin"
-//        }
+        println("deploy " + project.name)
 
         ant.lifecycleLogLevel = "INFO"
 
-        ant.sync(todir: "/opt/jvmapps/maven-proxy/bin", overwrite: true, verbose: true) {
+//        Provider<Directory> localFolder = layout.projectDirectory.dir("app")
+        String remoteFolder = "/opt/jvmapps/maven-proxy"
+
+        ant.sync(todir: remoteFolder + "/bin", overwrite: true, verbose: true) {
             fileset(dir: layout.projectDirectory.dir("app").dir("maven-proxy").dir("bin"))
         }
 
-        ant.sync(todir: "/opt/jvmapps/maven-proxy/libs", overwrite: true, verbose: true) {
+        ant.sync(todir: remoteFolder + "/libs", overwrite: true, verbose: true) {
             fileset(dir: layout.projectDirectory.dir("app").dir("maven-proxy").dir("libs"))
         }
 
-        ant.sync(todir: "/opt/jvmapps/maven-proxy/resources", overwrite: true, verbose: true) {
+        ant.sync(todir: remoteFolder + "/resources", overwrite: true, verbose: true) {
             fileset(dir: layout.projectDirectory.dir("app").dir("maven-proxy").dir("resources"))
         }
+
+        // Funktioniert nicht, wegen Fehler: "Could not find method from() for arguments ..."
+//        sync {
+//            from layout.projectDirectory.dir("app").dir("maven-proxy").dir("resources")
+//            into remoteFolder + "/resources"
+//            preserve {
+//                include 'extraDir/**'
+//                include 'dir1/**'
+//                exclude 'dir1/extra.txt'
+//            }
+//        }
     }
 }
 
