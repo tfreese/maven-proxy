@@ -5,7 +5,7 @@
 
 # --network host: für Internetzugang
 
-#FROM localhost:5083/openjdk:17
+#FROM localhost:5083/openjdk:21
 FROM openjdk:latest
  
 MAINTAINER Thomas Freese <commercial@freese-home.de>
