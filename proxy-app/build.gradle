@@ -1,56 +1,19 @@
-buildscript {
-    // For Plugins
-    repositories {
-        mavenLocal()
-        mavenCentral()
-//        gradlePluginPortal() // maven { url "https://plugins.gradle.org/m2"; name "plugins-gradle" }
-    }
-}
-
 plugins {
     id "java"
-    id "io.spring.dependency-management" version "$version_springDependencyManagement"
-}
-
-group = "de.freese.maven.proxy"
-version = "0.0.1-SNAPSHOT"
-description = "Proxy application project"
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-}
-
-test {
-    useJUnitPlatform()
 }
 
 clean {
-    doLast {
+    doFirst {
         println("delete " + layout.projectDirectory.dir("app"))
+//        delete fileTree(layout.projectDirectory.dir("app")).include("**/*")
         delete layout.projectDirectory.dir("app")
     }
 }
 
-dependencyManagement {
-    imports {
-        mavenBom "org.springframework.boot:spring-boot-dependencies:$version_springBoot"
-    }
-}
-
 dependencies {
-    implementation("${group}:proxy-core:${version}")
-//    implementation(project(":proxy-core"))
+    implementation(project(":proxy-core"))
 
     runtimeOnly("org.apache.logging.log4j:log4j-slf4j2-impl")
-
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-
-//    runtimeOnly("org.apache.logging.log4j:log4j-slf4j2-impl:2.20.0")
-//
-//    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-//    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
 }
 
 tasks.register("build-app") {
@@ -59,23 +22,25 @@ tasks.register("build-app") {
     doLast {
         println("build " + project.name)
 
-//        Provider<Directory> appFolder = layout.projectDirectory.dir("app")
+        Directory appFolder = layout.projectDirectory.dir("app").dir("maven-proxy")
+
+        mkdir appFolder.dir("logs")
 
         copy {
             from layout.projectDirectory.dir("service").file("maven-proxy.sh")
-            into layout.projectDirectory.dir("app").dir("maven-proxy").dir("bin")
+            into appFolder.dir("bin")
         }
 
         copy {
             from configurations.runtimeClasspath
-            into layout.projectDirectory.dir("app").dir("maven-proxy").dir("libs")
+            into appFolder.dir("libs")
         }
 
         copy {
             from layout.projectDirectory.dir("src").dir("main").dir("resources")
             include "log4j2.xml"
             include "proxy-config.xml"
-            into layout.projectDirectory.dir("app").dir("maven-proxy").dir("resources")
+            into appFolder.dir("resources")
         }
     }
 }
@@ -88,24 +53,26 @@ tasks.register("deploy-app") {
 
         ant.lifecycleLogLevel = "INFO"
 
-//        Provider<Directory> localFolder = layout.projectDirectory.dir("app")
+        Directory appFolder = layout.projectDirectory.dir("app").dir("maven-proxy")
         String remoteFolder = "/opt/jvmapps/maven-proxy"
 
         ant.sync(todir: remoteFolder + "/bin", overwrite: true, verbose: true) {
-            fileset(dir: layout.projectDirectory.dir("app").dir("maven-proxy").dir("bin"))
+            fileset(dir: appFolder.dir("bin"))
         }
 
         ant.sync(todir: remoteFolder + "/libs", overwrite: true, verbose: true) {
-            fileset(dir: layout.projectDirectory.dir("app").dir("maven-proxy").dir("libs"))
+            fileset(dir: appFolder.dir("libs"))
         }
 
         ant.sync(todir: remoteFolder + "/resources", overwrite: true, verbose: true) {
-            fileset(dir: layout.projectDirectory.dir("app").dir("maven-proxy").dir("resources"))
+            fileset(dir: appFolder.dir("resources"))
         }
+
+        ant.mkdir(dir: remoteFolder + "/logs")
 
         // Funktioniert nicht, wegen Fehler: "Could not find method from() for arguments ..."
 //        sync {
-//            from layout.projectDirectory.dir("app").dir("maven-proxy").dir("resources")
+//            from appFolder.dir("resources")
 //            into remoteFolder + "/resources"
 //            preserve {
 //                include 'extraDir/**'

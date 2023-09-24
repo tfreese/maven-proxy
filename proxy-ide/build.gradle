@@ -1,0 +1,22 @@
+plugins {
+    id "java"
+    id "application"
+}
+
+application {
+    mainClass = "de.freese.maven.proxy.main.ProxyMain"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Main-Class": "de.freese.maven.proxy.main.ProxyMain"
+        )
+    }
+}
+
+dependencies {
+    implementation(project(":proxy-core"))
+
+    runtimeOnly("org.slf4j:slf4j-simple")
+}

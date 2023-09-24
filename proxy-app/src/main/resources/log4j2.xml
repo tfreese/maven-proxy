@@ -14,7 +14,7 @@
         <!-- Postfix if not empty: %notEmpty{%X{USER} -} -->
         <Property name="PATTERN">%date{yyyy-MM-dd HH:mm:ss.SSS} - %5level - [%15.-15thread] - %replace{%-30.-30logger{0}}{ }{.} - %message%n</Property>
 
-        <Property name="LOG_DIR">/opt/jvmapps/maven-proxy/logs</Property>
+        <Property name="LOG_DIR">logs</Property>
         <Property name="LOG_FILE">maven-proxy</Property>
 
         <Property name="LOG_DIRECTORY">${LOG_DIR:-${sys:user.home}/.java-apps/logs}</Property>

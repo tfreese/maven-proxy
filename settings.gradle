@@ -1,0 +1,8 @@
+// Without rootProject.name the Name of the Projekt-Directory is used.
+//rootProject.name = "base"
+
+include "blobstore-api"
+include "proxy-config"
+include "proxy-core"
+include "proxy-ide"
+include "proxy-app"

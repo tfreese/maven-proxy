@@ -1,0 +1,39 @@
+// Execute Tasks in SubModule: gradle MODUL:clean build
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        gradlePluginPortal()
+    }
+
+    dependencies {
+        classpath "de.freese.gradle:gradle-plugins:0.0.1-SNAPSHOT"
+        classpath "io.spring.gradle:dependency-management-plugin:$version_springDependencyManagement"
+//        classpath "org.springframework.boot:spring-boot-gradle-plugin:$version_springBootGradlePlugin"
+    }
+}
+
+subprojects {
+    apply plugin: "java"
+//    apply plugin: "maven-publish"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "de.freese.gradle.plugin.conventions"
+
+    dependencyManagement {
+        imports {
+            mavenBom "org.springframework.boot:spring-boot-dependencies:$version_springBoot"
+        }
+
+        dependencies {
+            dependencySet(group: "com.sun.xml.bind:", version: "$version_jaxb") {
+                entry "jaxb-xjc"
+                entry "jaxb-impl"
+            }
+        }
+    }
+
+    dependencies {
+        testImplementation("org.junit.jupiter:junit-jupiter")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    }
+}

@@ -1,0 +1,52 @@
+plugins {
+    id "java-library"
+}
+
+configurations {
+    jaxb
+}
+
+//checkstyle {
+//    checkstyleTest.enabled = false
+//}
+
+sourceSets {
+    main {
+        java {
+            srcDir(layout.buildDirectory.dir("generated/sources/jaxb"))
+        }
+    }
+}
+
+tasks.register("genJaxb") {
+    ext.sourcesDir = layout.buildDirectory.dir("generated/sources/jaxb").get()
+    ext.schema = layout.projectDirectory.file("src/main/resources/xsd/proxy-config.xsd")
+    ext.binding = layout.projectDirectory.file("src/main/resources/xsd/schema.xjb")
+
+    doLast {
+        mkdir ext.sourcesDir
+
+        ant {
+            taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask", classpath: configurations.jaxb.asPath
+
+            xjc(destdir: sourcesDir,
+                    schema: schema,
+                    binding: binding,
+                    package: "de.freese.maven.proxy.config",
+                    encoding: "UTF-8",
+                    readonly: true,
+                    extension: true) {
+                arg(value: "-npa")
+            }
+        }
+    }
+}
+
+compileJava.dependsOn "genJaxb"
+
+dependencies {
+    jaxb "com.sun.xml.bind:jaxb-xjc"
+    jaxb "com.sun.xml.bind:jaxb-impl"
+
+    api("jakarta.xml.bind:jakarta.xml.bind-api")
+}
