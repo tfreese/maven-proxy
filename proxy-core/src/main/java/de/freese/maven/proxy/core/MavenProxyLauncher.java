@@ -32,6 +32,7 @@ import de.freese.maven.proxy.core.utils.ProxyUtils;
 /**
  * @author Thomas Freese
  */
+@SuppressWarnings("static")
 public final class MavenProxyLauncher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenProxyLauncher.class);

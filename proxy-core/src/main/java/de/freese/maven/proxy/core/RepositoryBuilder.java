@@ -22,7 +22,6 @@ import de.freese.maven.proxy.core.repository.blobstore.BlobStoreRepository;
 import de.freese.maven.proxy.core.repository.cached.CachedRepository;
 import de.freese.maven.proxy.core.repository.local.FileRepository;
 import de.freese.maven.proxy.core.repository.remote.JreHttpRemoteRepository;
-import de.freese.maven.proxy.core.repository.virtual.AbstractVirtualRepository;
 import de.freese.maven.proxy.core.repository.virtual.DefaultVirtualRepository;
 
 /**
@@ -103,7 +102,7 @@ public final class RepositoryBuilder {
 
     public static Repository buildVirtual(VirtualRepoConfig virtualRepoConfig, LifecycleManager lifecycleManager, RepositoryManager repositoryManager) {
         if (!virtualRepoConfig.getRepositoryNames().isEmpty()) {
-            AbstractVirtualRepository virtualRepository = new DefaultVirtualRepository(virtualRepoConfig.getName());
+            DefaultVirtualRepository virtualRepository = new DefaultVirtualRepository(virtualRepoConfig.getName());
 
             for (String repositoryName : virtualRepoConfig.getRepositoryNames()) {
                 Repository repository = repositoryManager.getRepository(repositoryName);
@@ -113,7 +112,7 @@ public final class RepositoryBuilder {
                     continue;
                 }
 
-                if (repository instanceof AbstractVirtualRepository vr) {
+                if (repository instanceof DefaultVirtualRepository vr) {
                     LOGGER.error("A VirtualRepository can not contain another VirtualRepository: {}", vr.getName());
                     continue;
                 }

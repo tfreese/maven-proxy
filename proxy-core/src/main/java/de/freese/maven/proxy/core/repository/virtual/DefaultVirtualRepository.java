@@ -2,17 +2,36 @@
 package de.freese.maven.proxy.core.repository.virtual;
 
 import java.net.URI;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
+import de.freese.maven.proxy.core.repository.AbstractRepository;
 import de.freese.maven.proxy.core.repository.Repository;
 import de.freese.maven.proxy.core.repository.RepositoryResponse;
+import de.freese.maven.proxy.core.utils.HttpMethod;
 
 /**
  * @author Thomas Freese
  */
-public class DefaultVirtualRepository extends AbstractVirtualRepository {
+public class DefaultVirtualRepository extends AbstractRepository {
+
+    private final CopyOnWriteArrayList<Repository> repositories = new CopyOnWriteArrayList<>();
 
     public DefaultVirtualRepository(final String name) {
         super(name, URI.create("virtual"));
+    }
+
+    public DefaultVirtualRepository add(final Repository repository) {
+        checkNotNull(repository, "Repository");
+
+        addRepository(repository);
+
+        return this;
+    }
+
+    @Override
+    public boolean supports(final HttpMethod httpMethod) {
+        return HttpMethod.HEAD.equals(httpMethod) || HttpMethod.GET.equals(httpMethod);
     }
 
     @Override
@@ -53,5 +72,17 @@ public class DefaultVirtualRepository extends AbstractVirtualRepository {
         }
 
         return response;
+    }
+
+    private void addRepository(Repository repository) {
+        boolean added = repositories.addIfAbsent(repository);
+
+        if (added) {
+            getLogger().trace("Added: {}", repository);
+        }
+    }
+
+    private List<Repository> getRepositories() {
+        return repositories;
     }
 }

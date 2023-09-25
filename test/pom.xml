@@ -23,8 +23,8 @@
         <buildTimestamp>${maven.build.timestamp}</buildTimestamp>
         <createChecksum>true</createChecksum>
 
-        <maven.compiler.target>20</maven.compiler.target>
-        <maven.compiler.source>20</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+        <maven.compiler.source>21</maven.compiler.source>
 
         <gradle-tooling-api.version>8.2.1</gradle-tooling-api.version>
         <primefaces-themes.version>1.0.10</primefaces-themes.version>
