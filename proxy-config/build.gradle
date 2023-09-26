@@ -10,21 +10,36 @@ configurations {
 //    checkstyleTest.enabled = false
 //}
 
+dependencies {
+    jaxb "com.sun.xml.bind:jaxb-xjc"
+    jaxb "com.sun.xml.bind:jaxb-impl"
+
+//    compile(files(genJaxb.classesDir).builtBy(genJaxb))
+
+    api("jakarta.xml.bind:jakarta.xml.bind-api")
+}
+
 sourceSets {
     main {
         java {
-            srcDir(layout.buildDirectory.dir("generated/sources/jaxb"))
+            srcDir(layout.buildDirectory.get().dir("generated").dir("sources").dir("jaxb"))
         }
     }
 }
 
 tasks.register("genJaxb") {
-    ext.sourcesDir = layout.buildDirectory.dir("generated/sources/jaxb").get()
-    ext.schema = layout.projectDirectory.file("src/main/resources/xsd/proxy-config.xsd")
-    ext.binding = layout.projectDirectory.file("src/main/resources/xsd/schema.xjb")
+    group = "My Tasks"
+
+    Directory sourcesDir = layout.buildDirectory.get().dir("generated").dir("sources").dir("jaxb")
+
+    Directory resourcesDir = layout.projectDirectory.dir("src").dir("main").dir("resources").dir("xsd")
+    RegularFile schema = resourcesDir.file("proxy-config.xsd")
+    RegularFile binding = resourcesDir.file("schema.xjb")
+
+//    outputs.dir sourcesDir
 
     doLast {
-        mkdir ext.sourcesDir
+        mkdir sourcesDir
 
         ant {
             taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask", classpath: configurations.jaxb.asPath
@@ -43,10 +58,3 @@ tasks.register("genJaxb") {
 }
 
 compileJava.dependsOn "genJaxb"
-
-dependencies {
-    jaxb "com.sun.xml.bind:jaxb-xjc"
-    jaxb "com.sun.xml.bind:jaxb-impl"
-
-    api("jakarta.xml.bind:jakarta.xml.bind-api")
-}
