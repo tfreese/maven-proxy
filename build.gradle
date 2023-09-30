@@ -7,9 +7,9 @@ buildscript {
     }
 
     dependencies {
-        classpath "de.freese.gradle:gradle-plugins:0.0.1-SNAPSHOT"
-        classpath "io.spring.gradle:dependency-management-plugin:$version_springDependencyManagement"
-//        classpath "org.springframework.boot:spring-boot-gradle-plugin:$version_springBoot"
+        classpath("de.freese.gradle:gradle-plugins:$version_myConventionPlugin")
+        classpath("io.spring.gradle:dependency-management-plugin:$version_springDependencyManagement")
+//        classpath("org.springframework.boot:spring-boot-gradle-plugin:$version_springBoot")
     }
 }
 
@@ -21,7 +21,7 @@ subprojects {
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.boot:spring-boot-dependencies:$version_springBoot"
+            mavenBom("org.springframework.boot:spring-boot-dependencies:$version_springBoot")
         }
 
         dependencies {
