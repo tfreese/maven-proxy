@@ -42,6 +42,15 @@ tasks.register("build-app") {
             include "proxy-config.xml"
             into appFolder.dir("resources")
         }
+
+//        def docsSpec = copySpec {
+//            from(layout.projectDirectory.dir("docs"))
+//            into("docs")
+//        }
+//
+//        copy {
+//            with(docsSpec)
+//        }
     }
 }
 
