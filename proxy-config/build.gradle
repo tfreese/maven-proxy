@@ -30,15 +30,13 @@ sourceSets {
 tasks.register("genJaxb") {
     group = "My Tasks"
 
-    Directory sourcesDir = layout.buildDirectory.get().dir("generated").dir("sources").dir("jaxb")
-
-    Directory resourcesDir = layout.projectDirectory.dir("src").dir("main").dir("resources").dir("xsd")
-    RegularFile schema = resourcesDir.file("proxy-config.xsd")
-    RegularFile binding = resourcesDir.file("schema.xjb")
-
-//    outputs.dir sourcesDir
-
     doLast {
+        Directory sourcesDir = layout.buildDirectory.get().dir("generated").dir("sources").dir("jaxb")
+
+        Directory resourcesDir = layout.projectDirectory.dir("src").dir("main").dir("resources").dir("xsd")
+        RegularFile schema = resourcesDir.file("proxy-config.xsd")
+        RegularFile binding = resourcesDir.file("schema.xjb")
+
         mkdir sourcesDir
 
         ant {

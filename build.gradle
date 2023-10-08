@@ -29,8 +29,8 @@ subprojects {
     afterEvaluate { project ->
         if (project.plugins.hasPlugin("java") || project.plugins.hasPlugin("java-library") || project.plugins.hasPlugin("application")) {
             dependencies {
-                //implementation(platform("de.freese:maven-bom:$version_mavenBom"))
-                
+                //implementation(platform("org.springframework.boot:spring-boot-dependencies:$version_springBoot"))
+
                 testImplementation("org.junit.jupiter:junit-jupiter")
                 testRuntimeOnly("org.junit.platform:junit-platform-launcher")
             }
