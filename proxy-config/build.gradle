@@ -22,7 +22,7 @@ dependencies {
 sourceSets {
     main {
         java {
-            srcDir(layout.buildDirectory.get().dir("generated").dir("sources").dir("jaxb"))
+            srcDir(layout.buildDirectory.get().dir("generated-sources").dir("jaxb"))
         }
     }
 }
@@ -30,29 +30,32 @@ sourceSets {
 tasks.register("genJaxb") {
     group = "My Tasks"
 
+    def resourcesDir = layout.projectDirectory.dir("src").dir("main").dir("resources").dir("xsd")
+    def schema = resourcesDir.file("proxy-config.xsd")
+    inputs.file schema
+    def binding = resourcesDir.file("schema.xjb")
+    inputs.file binding
+
+    def destDir = layout.buildDirectory.get().dir("generated-sources").dir("jaxb")
+    outputs.dir destDir
+
     doLast {
-        Directory sourcesDir = layout.buildDirectory.get().dir("generated").dir("sources").dir("jaxb")
-
-        Directory resourcesDir = layout.projectDirectory.dir("src").dir("main").dir("resources").dir("xsd")
-        RegularFile schema = resourcesDir.file("proxy-config.xsd")
-        RegularFile binding = resourcesDir.file("schema.xjb")
-
-        mkdir sourcesDir
+        mkdir destDir
 
         ant {
             taskdef name: "xjc", classname: "com.sun.tools.xjc.XJCTask", classpath: configurations.jaxb.asPath
 
-            xjc(destdir: sourcesDir,
+            xjc(destdir: destDir,
                     schema: schema,
                     binding: binding,
                     package: "de.freese.maven.proxy.config",
-                    encoding: "UTF-8",
+                    encoding: compileJava.options.encoding,
                     readonly: true,
                     extension: true) {
                 arg(value: "-npa")
+                //schema(dir: destDir, includes: "*.xsd")
             }
         }
     }
 }
-
 compileJava.dependsOn "genJaxb"
