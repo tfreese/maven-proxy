@@ -3,17 +3,23 @@ plugins {
 //    id "application"
 }
 
+ext {
+    main = "de.freese.maven.proxy.main.ProxyMain"
+}
+
 //application {
-//    mainClass = "de.freese.maven.proxy.main.ProxyMain"
+//    mainClass = project.main
 //}
-//
-//jar {
-//    manifest {
-//        attributes(
-//                "Main-Class": "de.freese.maven.proxy.main.ProxyMain"
-//        )
-//    }
-//}
+
+jar {
+    enabled = false
+    
+    manifest {
+        attributes(
+                "Main-Class": project.main
+        )
+    }
+}
 
 dependencies {
     implementation(project(":proxy-core"))
