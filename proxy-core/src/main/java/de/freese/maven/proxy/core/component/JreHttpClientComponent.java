@@ -40,8 +40,8 @@ public class JreHttpClientComponent extends AbstractLifecycle {
         super.doStart();
 
         checkNotNull(clientConfig, "ClientConfig");
-        checkValue(clientConfig.getThreadPoolCoreSize(), value -> value <= 0 ? "ThreadPoolCoreSize has invalid range: " + value : null);
-        checkValue(clientConfig.getThreadPoolMaxSize(), value -> value <= 0 ? "ThreadPoolMaxSize has invalid range: " + value : null);
+        checkValue(clientConfig.getThreadPoolCoreSize(), value -> value <= 0 ? ("ThreadPoolCoreSize has invalid range: " + value) : null);
+        checkValue(clientConfig.getThreadPoolMaxSize(), value -> value <= 0 ? ("ThreadPoolMaxSize has invalid range: " + value) : null);
         checkNotNull(clientConfig.getThreadNamePattern(), "ThreadNamePattern");
 
         int threadPoolCoreSize = clientConfig.getThreadPoolCoreSize();
@@ -71,6 +71,8 @@ public class JreHttpClientComponent extends AbstractLifecycle {
     protected void doStop() throws Exception {
         super.doStop();
 
+        this.httpClient.shutdownNow();
+        this.httpClient.close();
         this.httpClient = null;
 
         ProxyUtils.shutdown(this.executorService, getLogger());

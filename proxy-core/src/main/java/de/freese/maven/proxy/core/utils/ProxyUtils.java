@@ -44,15 +44,15 @@ public final class ProxyUtils {
     /**
      * io.netty.handler.codec.http.HttpResponseStatus
      */
-    public static final int HTTP_NOT_FOUND = 404;
+    public static final int HTTP_NOT_FOUND = HttpURLConnection.HTTP_NOT_FOUND;
     /**
      * io.netty.handler.codec.http.HttpResponseStatus
      */
-    public static final int HTTP_OK = 200;
+    public static final int HTTP_OK = HttpURLConnection.HTTP_OK;
     /**
      * io.netty.handler.codec.http.HttpResponseStatus
      */
-    public static final int HTTP_SERVICE_UNAVAILABLE = 503;
+    public static final int HTTP_SERVICE_UNAVAILABLE = HttpURLConnection.HTTP_UNAVAILABLE;
 
     //    private static final FileNameMap FILE_NAME_MAP = URLConnection.getFileNameMap();
     //
@@ -113,7 +113,7 @@ public final class ProxyUtils {
 
         String proxyHost = System.getProperty("PROXY");
         String proxyPort = "8080";
-        String nonProxyHosts = "localhost|127.0.0.1|*.DOMAIN";
+        String nonProxyHosts = "localhost|127.*|[::1]|*.DOMAIN";
         String userID = System.getProperty("user.name");
         String password = System.getProperty("PROXY_PASS");
 
@@ -198,8 +198,8 @@ public final class ProxyUtils {
 
                 // Cancel currently executing tasks.
                 for (Runnable remainingTask : executorService.shutdownNow()) {
-                    if (remainingTask instanceof Future) {
-                        ((Future<?>) remainingTask).cancel(true);
+                    if (remainingTask instanceof Future f) {
+                        f.cancel(true);
                     }
                 }
 
@@ -232,31 +232,31 @@ public final class ProxyUtils {
     public static String toHumanReadable(final long size) {
         double value = Math.abs(size);
 
-        if (value < 1024) {
+        if (value < 1024D) {
             return size + " B";
         }
 
-        value /= 1024;
+        value /= 1024D;
 
-        if (value < 1024) {
+        if (value < 1024D) {
             return String.format("%.1f %s", value, "KB");
         }
 
-        value /= 1024;
+        value /= 1024D;
 
-        if (value < 1024) {
+        if (value < 1024D) {
             return String.format("%.1f %s", value, "MB");
         }
 
-        value /= 1024;
+        value /= 1024D;
 
         return String.format("%.1f %s", value, "GB");
 
         // CharacterIterator ci = new StringCharacterIterator("KMGTPE");
         //
-        // while (value > 1024)
+        // while (value > 1024D)
         // {
-        // value /= 1024;
+        // value /= 1024D;
         // ci.next();
         // }
         //

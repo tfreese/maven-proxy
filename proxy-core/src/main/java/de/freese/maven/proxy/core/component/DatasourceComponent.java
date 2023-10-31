@@ -52,8 +52,8 @@ public class DatasourceComponent extends AbstractLifecycle {
         checkNotNull(storeConfig, "StoreConfig");
         checkNotNull(storeConfig.getDriverClassName(), "DriverClassName");
         checkNotNull(storeConfig.getUrl(), "Url");
-        checkValue(storeConfig.getPoolCoreSize(), value -> value <= 0 ? "PoolCoreSize has invalid range: " + value : null);
-        checkValue(storeConfig.getPoolMaxSize(), value -> value <= 0 ? "PoolMaxSize has invalid range: " + value : null);
+        checkValue(storeConfig.getPoolCoreSize(), value -> value <= 0 ? ("PoolCoreSize has invalid range: " + value) : null);
+        checkValue(storeConfig.getPoolMaxSize(), value -> value <= 0 ? ("PoolMaxSize has invalid range: " + value) : null);
 
         HikariConfig config = new HikariConfig();
         config.setDriverClassName(storeConfig.getDriverClassName());
@@ -84,11 +84,11 @@ public class DatasourceComponent extends AbstractLifecycle {
             }
         }
 
-        if (dataSource instanceof AutoCloseable ac) {
-            ac.close();
-        }
-        else if (dataSource instanceof Closeable c) {
+        if (dataSource instanceof Closeable c) {
             c.close();
+        }
+        else if (dataSource instanceof AutoCloseable ac) {
+            ac.close();
         }
     }
 }
