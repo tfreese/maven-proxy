@@ -53,6 +53,7 @@ public final class ProxyUtils {
      * io.netty.handler.codec.http.HttpResponseStatus
      */
     public static final int HTTP_SERVICE_UNAVAILABLE = HttpURLConnection.HTTP_UNAVAILABLE;
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProxyUtils.class);
 
     //    private static final FileNameMap FILE_NAME_MAP = URLConnection.getFileNameMap();
     //
@@ -149,7 +150,7 @@ public final class ProxyUtils {
 
                 // Available Proxies for a URI.
                 List<Proxy> proxies = ProxySelector.getDefault().select(uri);
-                proxies.forEach(System.out::println);
+                proxies.forEach(p -> LOGGER.info("{}", p));
 
                 // SocketAddress proxyAddress = new InetSocketAddress("194.114.63.23", 8080);
                 // Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyAddress);
@@ -164,14 +165,14 @@ public final class ProxyUtils {
                     String line = null;
 
                     while ((line = in.readLine()) != null) {
-                        System.out.println(line);
+                        LOGGER.info(line);
                     }
                 }
 
                 ((HttpURLConnection) connection).disconnect();
             }
             catch (Exception ex) {
-                ex.printStackTrace();
+                LOGGER.error(ex.getMessage(), ex);
             }
         }
     }
@@ -198,7 +199,7 @@ public final class ProxyUtils {
 
                 // Cancel currently executing tasks.
                 for (Runnable remainingTask : executorService.shutdownNow()) {
-                    if (remainingTask instanceof Future f) {
+                    if (remainingTask instanceof Future<?> f) {
                         f.cancel(true);
                     }
                 }
