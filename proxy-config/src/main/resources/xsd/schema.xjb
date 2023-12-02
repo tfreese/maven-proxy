@@ -6,7 +6,7 @@
 
     <jaxb:globalBindings>
         <xjc:simple />
-        <xjc:serializable uid="4711" />
+        <!--        <xjc:serializable uid="4711" />-->
 
         <jaxb:javaType name="int" xmlType="xs:positiveInteger"
                        parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"
