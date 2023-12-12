@@ -29,37 +29,36 @@
                        printMethod="jakarta.xml.bind.DatatypeConverter.printTime" />
     </jaxb:globalBindings>
 
-    <jaxb:bindings schemaLocation="proxy-config.xsd">
-        <!--        <jaxb:bindings node="//xs:complexType[@name='Book']">-->
-        <!--            <jaxb:class name="MyBook" />-->
-        <!--        </jaxb:bindings>-->
+    <!--    <jaxb:bindings schemaLocation="proxy-config.xsd">-->
+    <!--        <jaxb:bindings node="//xs:complexType[@name='Book']">-->
+    <!--            <jaxb:class name="MyBook" />-->
+    <!--        </jaxb:bindings>-->
 
-        <!--        <jaxb:bindings node="//xs:complexType[@name='StoreConfigtype']">-->
-        <!--            <jaxb:typesafeEnumClass name="StoreTypes" />-->
-        <!--        </jaxb:bindings>-->
+    <!--        <jaxb:bindings node="//xs:complexType[@name='StoreConfigtype']">-->
+    <!--            <jaxb:typesafeEnumClass name="StoreTypes" />-->
+    <!--        </jaxb:bindings>-->
 
-        <!--        <jaxb:bindings node="//xs:complexType[@name='ServerConfig']/xs:element[@name='port']">-->
-        <!--            &lt;!&ndash;            <jaxb:bindings node="xs:element[@name='port']">&ndash;&gt;-->
-        <!--            <jaxb:property>-->
-        <!--                <jaxb:baseType>-->
-        <!--                    <jaxb:javaType name="de.freese.maven.proxy.config.ServerConfig.port"-->
-        <!--                                   parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"-->
-        <!--                                   printMethod="jakarta.xml.bind.DatatypeConverter.printInt" />-->
-        <!--                </jaxb:baseType>-->
-        <!--            </jaxb:property>-->
-        <!--            &lt;!&ndash;            </jaxb:bindings>&ndash;&gt;-->
-        <!--        </jaxb:bindings>-->
+    <!--        <jaxb:bindings node="//xs:complexType[@name='ServerConfig']/xs:element[@name='port']">-->
+    <!--            &lt;!&ndash;            <jaxb:bindings node="xs:element[@name='port']">&ndash;&gt;-->
+    <!--            <jaxb:property>-->
+    <!--                <jaxb:baseType>-->
+    <!--                    <jaxb:javaType name="de.freese.maven.proxy.config.ServerConfig.port"-->
+    <!--                                   parseMethod="jakarta.xml.bind.DatatypeConverter.parseInt"-->
+    <!--                                   printMethod="jakarta.xml.bind.DatatypeConverter.printInt" />-->
+    <!--                </jaxb:baseType>-->
+    <!--            </jaxb:property>-->
+    <!--            &lt;!&ndash;            </jaxb:bindings>&ndash;&gt;-->
+    <!--        </jaxb:bindings>-->
 
-        <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='1-6']">-->
-        <!--            <jxb:typesafeEnumMember name="ONE_TO_SIX" />-->
-        <!--        </jxb:bindings>-->
-        <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='6-12']">-->
-        <!--            <jxb:typesafeEnumMember name="SIX_TO_TWELVE" />-->
-        <!--        </jxb:bindings>-->
-        <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='']">-->
-        <!--            <jxb:typesafeEnumMember name="BLANK" />-->
-        <!--        </jxb:bindings>-->
-
-    </jaxb:bindings>
+    <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='1-6']">-->
+    <!--            <jxb:typesafeEnumMember name="ONE_TO_SIX" />-->
+    <!--        </jxb:bindings>-->
+    <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='6-12']">-->
+    <!--            <jxb:typesafeEnumMember name="SIX_TO_TWELVE" />-->
+    <!--        </jxb:bindings>-->
+    <!--        <jxb:bindings node="//xs:simpleType[@name='education-level-type']/xs:restriction/xs:enumeration[@value='']">-->
+    <!--            <jxb:typesafeEnumMember name="BLANK" />-->
+    <!--        </jxb:bindings>-->
+    <!--    </jaxb:bindings>-->
 
 </jaxb:bindings>
