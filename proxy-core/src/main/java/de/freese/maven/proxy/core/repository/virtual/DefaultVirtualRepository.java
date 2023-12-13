@@ -74,7 +74,7 @@ public class DefaultVirtualRepository extends AbstractRepository {
         return response;
     }
 
-    private void addRepository(Repository repository) {
+    private void addRepository(final Repository repository) {
         boolean added = repositories.addIfAbsent(repository);
 
         if (added) {

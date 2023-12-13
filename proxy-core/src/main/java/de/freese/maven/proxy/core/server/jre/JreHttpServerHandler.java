@@ -99,7 +99,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
     /**
      * See Documentation of {@link HttpExchange}.
      */
-    protected void consumeAndCloseRequestStream(HttpExchange exchange) throws IOException {
+    protected void consumeAndCloseRequestStream(final HttpExchange exchange) throws IOException {
         try (InputStream inputStream = exchange.getRequestBody()) {
             inputStream.transferTo(OutputStream.nullOutputStream());
         }
@@ -171,7 +171,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         exchange.sendResponseHeaders(ProxyUtils.HTTP_OK, -1);
     }
 
-    protected URI removeContextRoot(URI uri) {
+    protected URI removeContextRoot(final URI uri) {
         String path = uri.getPath().substring(getContextRoot().length());
 
         return URI.create(path);

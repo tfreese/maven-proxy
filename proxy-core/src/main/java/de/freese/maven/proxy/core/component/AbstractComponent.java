@@ -14,11 +14,11 @@ public abstract class AbstractComponent {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    protected final <T> T checkNotNull(T object, String postfix) {
+    protected final <T> T checkNotNull(final T object, final String postfix) {
         return Objects.requireNonNull(object, postfix + " required");
     }
 
-    protected final <T> T checkValue(T object, Function<T, String> validator) {
+    protected final <T> T checkValue(final T object, final Function<T, String> validator) {
         String message = validator.apply(object);
 
         if (message != null && !message.isBlank()) {

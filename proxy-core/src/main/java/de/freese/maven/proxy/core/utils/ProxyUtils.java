@@ -59,7 +59,7 @@ public final class ProxyUtils {
     //
     //    private static final MimetypesFileTypeMap MIMETYPES_FILE_TYPE_MAP = new MimetypesFileTypeMap();
 
-    public static String getContentType(String fileName) {
+    public static String getContentType(final String fileName) {
         return "application/octet-stream";
         //        return MIMETYPES_FILE_TYPE_MAP.getContentType(fileName);
         //        return FILE_NAME_MAP.getContentTypeFor(fileName);

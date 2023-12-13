@@ -87,7 +87,7 @@ public class BlobStoreRepository extends AbstractRepository {
         return blobStore;
     }
 
-    protected URI removeSnapshotTimestamp(URI uri) {
+    protected URI removeSnapshotTimestamp(final URI uri) {
         if (!uri.getPath().contains("SNAPSHOT")) {
             return uri;
         }

@@ -137,7 +137,7 @@ public class LifecycleManager extends AbstractLifecycle {
         maybePropagate(throwables, "stop");
     }
 
-    protected void maybePropagate(List<Throwable> throwables, String messagePart) {
+    protected void maybePropagate(final List<Throwable> throwables, final String messagePart) {
         if (throwables.isEmpty()) {
             return;
         }

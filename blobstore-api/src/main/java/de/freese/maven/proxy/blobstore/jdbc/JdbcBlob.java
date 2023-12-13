@@ -14,7 +14,7 @@ class JdbcBlob extends AbstractBlob {
 
     private long length = Long.MAX_VALUE;
 
-    JdbcBlob(final BlobId id, JdbcBlobStore blobStore) {
+    JdbcBlob(final BlobId id, final JdbcBlobStore blobStore) {
         super(id);
 
         this.blobStore = Objects.requireNonNull(blobStore, "blobStore required");

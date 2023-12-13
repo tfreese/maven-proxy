@@ -68,8 +68,7 @@ public class FileBlobStore extends AbstractBlobStore {
     }
 
     Path toContentPath(final BlobId id) {
-        URI uri = id.getUri();
-        String uriString = uri.getPath();
+        String uriString = id.getUri().getPath();
 
         uriString = uriString.replace(':', '/');
         uriString = uriString.replace('?', '/');

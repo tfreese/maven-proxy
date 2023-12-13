@@ -24,7 +24,7 @@ public class DatasourceComponent extends AbstractLifecycle {
 
     private DataSource dataSource;
 
-    public DatasourceComponent(final StoreConfig storeConfig, String poolName) {
+    public DatasourceComponent(final StoreConfig storeConfig, final String poolName) {
         super();
 
         this.storeConfig = checkNotNull(storeConfig, "StoreConfig");

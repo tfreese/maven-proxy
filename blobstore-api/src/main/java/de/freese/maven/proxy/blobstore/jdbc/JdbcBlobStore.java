@@ -31,7 +31,7 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
  */
 public class JdbcBlobStore extends AbstractBlobStore {
 
-    private static URI getUri(DataSource dataSource) {
+    private static URI getUri(final DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             String url = connection.getMetaData().getURL();
 
@@ -48,7 +48,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
 
     private URI uri;
 
-    public JdbcBlobStore(Supplier<DataSource> dataSourceSupplier) {
+    public JdbcBlobStore(final Supplier<DataSource> dataSourceSupplier) {
         super();
 
         this.dataSourceSupplier = Objects.requireNonNull(dataSourceSupplier, "Supplier<DataSource> required");
@@ -244,7 +244,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
         return this.uri;
     }
 
-    InputStream inputStream(BlobId id) throws Exception {
+    InputStream inputStream(final BlobId id) throws Exception {
         String sql = "select BLOB from BLOB_STORE where URI = ?";
 
         Connection connection = getDataSource().getConnection();
@@ -308,7 +308,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
         };
     }
 
-    long length(BlobId id) throws Exception {
+    long length(final BlobId id) throws Exception {
         String sql = "select BLOB from BLOB_STORE where URI = ?";
 
         try (Connection connection = getDataSource().getConnection();

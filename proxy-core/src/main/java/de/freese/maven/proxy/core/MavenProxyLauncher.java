@@ -37,7 +37,7 @@ public final class MavenProxyLauncher {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MavenProxyLauncher.class);
 
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         LOGGER.info("Working Directory: {}", System.getProperty("user.dir"));
         LOGGER.info("Process User: {}", System.getProperty("user.name"));
 
@@ -57,7 +57,8 @@ public final class MavenProxyLauncher {
         //            return;
         //        }
 
-        URL url = ProxyUtils.getDefaultClassLoader().getSystemResource("xsd/proxy-config.xsd");
+        ProxyUtils.getDefaultClassLoader();
+        URL url = ClassLoader.getSystemResource("xsd/proxy-config.xsd");
         LOGGER.info("XSD-Url: {}", url);
         Source schemaFile = new StreamSource(url.openStream());
 
@@ -146,7 +147,8 @@ public final class MavenProxyLauncher {
             return Paths.get(envValue).toUri();
         }
 
-        URL url = ProxyUtils.getDefaultClassLoader().getSystemResource("proxy-config.xml");
+        ProxyUtils.getDefaultClassLoader();
+        URL url = ClassLoader.getSystemResource("proxy-config.xml");
 
         if (url != null) {
             return url.toURI();

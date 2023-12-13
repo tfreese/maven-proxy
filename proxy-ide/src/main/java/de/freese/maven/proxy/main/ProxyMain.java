@@ -7,7 +7,7 @@ import de.freese.maven.proxy.core.MavenProxyLauncher;
  * @author Thomas Freese
  */
 public final class ProxyMain {
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         MavenProxyLauncher.main(args);
     }
 

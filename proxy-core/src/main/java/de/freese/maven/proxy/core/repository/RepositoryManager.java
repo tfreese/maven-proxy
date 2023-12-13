@@ -15,7 +15,7 @@ public class RepositoryManager extends AbstractComponent {
 
     private final Map<String, Repository> repositories = new TreeMap<>();
 
-    public RepositoryManager add(Repository repository) {
+    public RepositoryManager add(final Repository repository) {
         checkNotNull(repository, "Repository");
 
         if (repositories.containsKey(repository.getName())) {
@@ -31,7 +31,7 @@ public class RepositoryManager extends AbstractComponent {
         return repositories.values().stream().filter(Objects::nonNull);
     }
 
-    public Repository getRepository(String name) {
+    public Repository getRepository(final String name) {
         return repositories.get(name);
     }
 }

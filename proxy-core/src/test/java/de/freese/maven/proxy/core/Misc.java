@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
  * @author Thomas Freese
  */
 public final class Misc {
-    public static void main(String[] args) throws Exception {
+    public static void main(final String[] args) throws Exception {
         //        testUrl();
         removeSnapshotTimestamp();
     }

@@ -30,7 +30,7 @@ import de.freese.maven.proxy.core.repository.virtual.DefaultVirtualRepository;
 public final class RepositoryBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryBuilder.class);
 
-    public static Repository buildLocal(LocalRepoConfig localRepoConfig, LifecycleManager lifecycleManager, RepositoryManager repositoryManager) {
+    public static Repository buildLocal(final LocalRepoConfig localRepoConfig, final LifecycleManager lifecycleManager, final RepositoryManager repositoryManager) {
         URI uri = URI.create(localRepoConfig.getPath());
 
         if ("file".equalsIgnoreCase(uri.getScheme())) {
@@ -58,7 +58,7 @@ public final class RepositoryBuilder {
         return null;
     }
 
-    public static Repository buildRemote(RemoteRepoConfig remoteRepoConfig, LifecycleManager lifecycleManager, RepositoryManager repositoryManager, JreHttpClientComponent httpClientComponent) {
+    public static Repository buildRemote(final RemoteRepoConfig remoteRepoConfig, final LifecycleManager lifecycleManager, final RepositoryManager repositoryManager, final JreHttpClientComponent httpClientComponent) {
         URI uri = URI.create(remoteRepoConfig.getUrl());
 
         if ("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme())) {
@@ -100,7 +100,7 @@ public final class RepositoryBuilder {
         return null;
     }
 
-    public static Repository buildVirtual(VirtualRepoConfig virtualRepoConfig, LifecycleManager lifecycleManager, RepositoryManager repositoryManager) {
+    public static Repository buildVirtual(final VirtualRepoConfig virtualRepoConfig, final LifecycleManager lifecycleManager, final RepositoryManager repositoryManager) {
         if (!virtualRepoConfig.getRepositoryNames().isEmpty()) {
             DefaultVirtualRepository virtualRepository = new DefaultVirtualRepository(virtualRepoConfig.getName());
 

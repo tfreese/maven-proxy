@@ -223,7 +223,7 @@ class TestBlobStore {
         System.out.println("name = " + name + ", blobStore = " + blobStore.getUri());
     }
 
-    protected void testAfterInsert(BlobStore blobStore, BlobId blobId, URI uri, long fileSize, byte[] bytes) throws Exception {
+    protected void testAfterInsert(final BlobStore blobStore, final BlobId blobId, final URI uri, final long fileSize, final byte[] bytes) throws Exception {
         assertTrue(blobStore.exists(blobId));
 
         // Select
