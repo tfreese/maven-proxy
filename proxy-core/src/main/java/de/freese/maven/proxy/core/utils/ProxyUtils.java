@@ -99,24 +99,24 @@ public final class ProxyUtils {
     }
 
     public static void setupProxy() throws UnknownHostException {
-        String domain = System.getenv("userdomain");
+        final String domain = System.getenv("userdomain");
 
         if ((domain != null) && !domain.equals(System.getProperty("DOMAIN"))) {
             return;
         }
 
-        InetAddress address = InetAddress.getLocalHost();
-        String canonicalHostName = address.getCanonicalHostName();
+        final InetAddress address = InetAddress.getLocalHost();
+        final String canonicalHostName = address.getCanonicalHostName();
 
         if ((canonicalHostName != null) && !canonicalHostName.endsWith(System.getProperty("HOST"))) {
             return;
         }
 
-        String proxyHost = System.getProperty("PROXY");
-        String proxyPort = "8080";
-        String nonProxyHosts = "localhost|127.*|[::1]|*.DOMAIN";
-        String userID = System.getProperty("user.name");
-        String password = System.getProperty("PROXY_PASS");
+        final String proxyHost = System.getProperty("PROXY");
+        final String proxyPort = "8080";
+        final String nonProxyHosts = "localhost|127.*|[::1]|*.DOMAIN";
+        final String userID = System.getProperty("user.name");
+        final String password = System.getProperty("PROXY_PASS");
 
         System.setProperty("java.net.useSystemProxies", "true");
 
@@ -145,19 +145,19 @@ public final class ProxyUtils {
         // Test
         if (Boolean.getBoolean("java.net.useSystemProxies")) {
             try {
-                URI uri = URI.create("https://www.google.de");
-                // URI uri = URI.create("https://search.maven.org");
+                final URI uri = URI.create("https://www.google.de");
+                // final URI uri = URI.create("https://search.maven.org");
 
                 // Available Proxies for a URI.
-                List<Proxy> proxies = ProxySelector.getDefault().select(uri);
+                final List<Proxy> proxies = ProxySelector.getDefault().select(uri);
                 proxies.forEach(p -> LOGGER.info("{}", p));
 
                 // SocketAddress proxyAddress = new InetSocketAddress("194.114.63.23", 8080);
-                // Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyAddress);
-                Proxy proxy = proxies.get(0);
+                // final Proxy proxy = new Proxy(Proxy.Type.HTTP, proxyAddress);
+                final Proxy proxy = proxies.get(0);
 
-                URLConnection connection = uri.toURL().openConnection(proxy);
-                // URLConnection connection = url.openConnection();
+                final URLConnection connection = uri.toURL().openConnection(proxy);
+                // final URLConnection connection = url.openConnection();
 
                 try (InputStream response = connection.getInputStream();
                      InputStreamReader inputStreamReader = new InputStreamReader(response, StandardCharsets.UTF_8);
@@ -253,7 +253,7 @@ public final class ProxyUtils {
 
         return String.format("%.1f %s", value, "GB");
 
-        // CharacterIterator ci = new StringCharacterIterator("KMGTPE");
+        // final CharacterIterator ci = new StringCharacterIterator("KMGTPE");
         //
         // while (value > 1024D)
         // {

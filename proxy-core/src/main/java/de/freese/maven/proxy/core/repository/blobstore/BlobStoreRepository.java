@@ -35,9 +35,9 @@ public class BlobStoreRepository extends AbstractRepository {
 
     @Override
     protected boolean doExist(final URI resource) throws Exception {
-        BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
+        final BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
 
-        boolean exist = getBlobStore().exists(blobId);
+        final boolean exist = getBlobStore().exists(blobId);
 
         if (getLogger().isDebugEnabled()) {
             if (exist) {
@@ -53,14 +53,14 @@ public class BlobStoreRepository extends AbstractRepository {
 
     @Override
     protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
-        BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
+        final BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
 
         if (getBlobStore().exists(blobId)) {
             if (getLogger().isDebugEnabled()) {
                 getLogger().debug("getInputStream - found: {}", resource);
             }
 
-            Blob blob = getBlobStore().get(blobId);
+            final Blob blob = getBlobStore().get(blobId);
 
             return new RepositoryResponse(resource, blob.getLength(), blob.getInputStream());
         }
@@ -74,7 +74,7 @@ public class BlobStoreRepository extends AbstractRepository {
 
     @Override
     protected void doWrite(final URI resource, final InputStream inputStream) throws Exception {
-        BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
+        final BlobId blobId = new BlobId(removeSnapshotTimestamp(resource));
 
         getBlobStore().create(blobId, inputStream);
 
@@ -93,7 +93,7 @@ public class BlobStoreRepository extends AbstractRepository {
         }
 
         String uriValue = uri.toString();
-        Matcher matcher = PATTERN_SNAPSHOT_TIMESTAMP.matcher(uriValue);
+        final Matcher matcher = PATTERN_SNAPSHOT_TIMESTAMP.matcher(uriValue);
 
         if (!matcher.find()) {
             return uri;

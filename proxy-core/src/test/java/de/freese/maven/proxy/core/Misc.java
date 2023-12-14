@@ -15,8 +15,8 @@ public final class Misc {
     }
 
     private static void removeSnapshotTimestamp() throws Exception {
-        Pattern pattern = Pattern.compile("\\d{8}\\.\\d{6}-\\d");
-        Matcher matcher = pattern.matcher("/de/freese/maven/proxy/test-project/0.0.1-SNAPSHOT/test-project-0.0.1-20230806.084242-1.pom");
+        final Pattern pattern = Pattern.compile("\\d{8}\\.\\d{6}-\\d");
+        final Matcher matcher = pattern.matcher("/de/freese/maven/proxy/test-project/0.0.1-SNAPSHOT/test-project-0.0.1-20230806.084242-1.pom");
 
         if (matcher.find()) {
             System.out.println(matcher.group());
@@ -26,9 +26,9 @@ public final class Misc {
     }
 
     private static void testUrl() throws Exception {
-        URI uri = URI.create("file:///tmp/maven-proxy/cache/");
+        final URI uri = URI.create("file:///tmp/maven-proxy/cache/");
 
-        String relative = "public-cached";
+        final String relative = "public-cached";
 
         System.out.println(uri.relativize(URI.create(relative)));
         System.out.println(uri.resolve(URI.create(relative)));

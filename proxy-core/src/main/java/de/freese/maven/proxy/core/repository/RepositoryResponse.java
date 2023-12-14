@@ -14,9 +14,7 @@ import java.util.Objects;
 public class RepositoryResponse {
 
     private final long contentLength;
-
     private final InputStream inputStream;
-
     private final URI uri;
 
     public RepositoryResponse(final URI uri, final long contentLength, final InputStream inputStream) {
@@ -32,8 +30,8 @@ public class RepositoryResponse {
     }
 
     public String getFileName() {
-        String path = this.uri.toString();
-        int lastSlashIndex = path.lastIndexOf('/');
+        final String path = this.uri.toString();
+        final int lastSlashIndex = path.lastIndexOf('/');
 
         return path.substring(lastSlashIndex + 1);
     }

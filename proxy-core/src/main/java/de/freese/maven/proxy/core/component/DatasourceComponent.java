@@ -19,7 +19,6 @@ import de.freese.maven.proxy.core.lifecycle.AbstractLifecycle;
 public class DatasourceComponent extends AbstractLifecycle {
 
     private final String poolName;
-
     private final StoreConfig storeConfig;
 
     private DataSource dataSource;
@@ -55,7 +54,7 @@ public class DatasourceComponent extends AbstractLifecycle {
         checkValue(storeConfig.getPoolCoreSize(), value -> value <= 0 ? ("PoolCoreSize has invalid range: " + value) : null);
         checkValue(storeConfig.getPoolMaxSize(), value -> value <= 0 ? ("PoolMaxSize has invalid range: " + value) : null);
 
-        HikariConfig config = new HikariConfig();
+        final HikariConfig config = new HikariConfig();
         config.setDriverClassName(storeConfig.getDriverClassName());
         config.setJdbcUrl(storeConfig.getUrl());
         config.setUsername(storeConfig.getUser());
@@ -73,7 +72,7 @@ public class DatasourceComponent extends AbstractLifecycle {
         super.doStop();
 
         try (Connection connection = dataSource.getConnection()) {
-            String productName = connection.getMetaData().getDatabaseProductName().toLowerCase();
+            final String productName = connection.getMetaData().getDatabaseProductName().toLowerCase();
 
             // Handled already by hsql with 'shutdown=true'.
             if (productName.contains("h2") || productName.contains("hsql")) {

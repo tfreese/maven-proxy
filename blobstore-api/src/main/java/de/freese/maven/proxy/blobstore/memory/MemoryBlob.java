@@ -10,7 +10,6 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
  * @author Thomas Freese
  */
 class MemoryBlob extends AbstractBlob {
-    
     private final byte[] bytes;
 
     MemoryBlob(final BlobId id, final byte[] bytes) {

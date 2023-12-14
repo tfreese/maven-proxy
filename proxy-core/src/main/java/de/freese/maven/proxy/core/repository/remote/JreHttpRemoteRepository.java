@@ -26,10 +26,10 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
 
     @Override
     protected boolean doExist(final URI resource) throws Exception {
-        URI uri = createResourceUri(getUri(), resource);
+        final URI uri = createResourceUri(getUri(), resource);
 
         // @formatter:off
-        HttpRequest request = HttpRequest.newBuilder()
+        final HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header(ProxyUtils.HTTP_HEADER_USER_AGENT, "Maven-Proxy")
                 .method("HEAD", HttpRequest.BodyPublishers.noBody())
@@ -41,7 +41,7 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
             getLogger().debug("exist - Request: {}", request.toString());
         }
 
-        HttpResponse<Void> response = getHttpClient().send(request, HttpResponse.BodyHandlers.discarding());
+        final HttpResponse<Void> response = getHttpClient().send(request, HttpResponse.BodyHandlers.discarding());
 
         if (getLogger().isDebugEnabled()) {
             getLogger().debug("exist - Response: {}", response.toString());
@@ -52,10 +52,10 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
 
     @Override
     protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
-        URI uri = createResourceUri(getUri(), resource);
+        final URI uri = createResourceUri(getUri(), resource);
 
         // @formatter:off
-        HttpRequest request = HttpRequest.newBuilder()
+        final HttpRequest request = HttpRequest.newBuilder()
                 .uri(uri)
                 .header(ProxyUtils.HTTP_HEADER_USER_AGENT, "Maven-Proxy")
                 .GET()
@@ -67,7 +67,7 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
             getLogger().debug("getInputStream - Request: {}", request.toString());
         }
 
-        HttpResponse<InputStream> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
+        final HttpResponse<InputStream> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
 
         if (getLogger().isDebugEnabled()) {
             getLogger().debug("getInputStream - Response: {}", response.toString());
@@ -77,7 +77,7 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
             return null;
         }
 
-        long contentLength = response.headers().firstValueAsLong(ProxyUtils.HTTP_HEADER_CONTENT_LENGTH).orElse(0);
+        final long contentLength = response.headers().firstValueAsLong(ProxyUtils.HTTP_HEADER_CONTENT_LENGTH).orElse(0);
 
         return new RepositoryResponse(uri, contentLength, response.body());
     }

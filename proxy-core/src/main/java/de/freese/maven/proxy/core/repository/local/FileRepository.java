@@ -26,9 +26,9 @@ public class FileRepository extends AbstractRepository {
 
     @Override
     protected boolean doExist(final URI resource) throws Exception {
-        Path path = toPath(resource);
+        final Path path = toPath(resource);
 
-        boolean exist = Files.exists(path);
+        final boolean exist = Files.exists(path);
 
         if (getLogger().isDebugEnabled()) {
             if (exist) {
@@ -44,7 +44,7 @@ public class FileRepository extends AbstractRepository {
 
     @Override
     protected RepositoryResponse doGetInputStream(final URI resource) throws Exception {
-        Path path = toPath(resource);
+        final Path path = toPath(resource);
 
         if (Files.exists(path)) {
             if (getLogger().isDebugEnabled()) {
@@ -65,7 +65,7 @@ public class FileRepository extends AbstractRepository {
     protected void doStart() throws Exception {
         super.doStart();
 
-        Path path = Paths.get(getUri());
+        final Path path = Paths.get(getUri());
 
         if (!Files.exists(path)) {
             Files.createDirectories(path);
@@ -77,7 +77,7 @@ public class FileRepository extends AbstractRepository {
     }
 
     protected Path toPath(final URI resource) {
-        Path relativePath = toRelativePath(resource);
+        final Path relativePath = toRelativePath(resource);
 
         return Paths.get(getUri()).resolve(relativePath);
     }

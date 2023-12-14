@@ -16,7 +16,7 @@ public class LifecycleManager extends AbstractLifecycle {
     public void add(final Lifecycle component) {
         checkNotNull(component, "Lifecycle");
 
-        boolean added = components.addIfAbsent(component);
+        final boolean added = components.addIfAbsent(component);
 
         if (added) {
             getLogger().trace("Added: {}", component);
@@ -54,7 +54,7 @@ public class LifecycleManager extends AbstractLifecycle {
     public void remove(final Lifecycle component) {
         checkNotNull(component, "Lifecycle");
 
-        boolean removed = components.remove(component);
+        final boolean removed = components.remove(component);
 
         if (removed) {
             getLogger().trace("Removed: {}", component);
@@ -94,11 +94,11 @@ public class LifecycleManager extends AbstractLifecycle {
 
     @Override
     protected void doStart() throws Exception {
-        int count = components.size();
+        final int count = components.size();
 
         getLogger().info("Starting {} components", count);
 
-        List<Throwable> throwables = new ArrayList<>(count);
+        final List<Throwable> throwables = new ArrayList<>(count);
 
         for (Lifecycle component : components) {
             try {
@@ -115,13 +115,13 @@ public class LifecycleManager extends AbstractLifecycle {
 
     @Override
     protected void doStop() throws Exception {
-        int count = components.size();
+        final int count = components.size();
 
         getLogger().info("Stopping {} components", count);
 
-        List<Throwable> throwables = new ArrayList<>(count);
+        final List<Throwable> throwables = new ArrayList<>(count);
 
-        List<Lifecycle> copy = new ArrayList<>(components);
+        final List<Lifecycle> copy = new ArrayList<>(components);
         Collections.reverse(copy);
 
         for (Lifecycle component : copy) {
@@ -142,7 +142,7 @@ public class LifecycleManager extends AbstractLifecycle {
             return;
         }
 
-        String message = "Failed to %s %d components".formatted(messagePart, throwables.size());
+        final String message = "Failed to %s %d components".formatted(messagePart, throwables.size());
 
         getLogger().error(message);
 

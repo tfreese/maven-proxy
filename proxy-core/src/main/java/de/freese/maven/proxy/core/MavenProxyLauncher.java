@@ -50,7 +50,7 @@ public final class MavenProxyLauncher {
             System.setProperty("jdk.httpclient.HttpClient.log", "requests");
         }
 
-        URI configUri = findConfigFile(args);
+        final URI configUri = findConfigFile(args);
 
         //        if (!Files.exists(Paths.get(configUri))) {
         //            LOGGER.error("maven-proxy config file not exist: {}", configUri);
@@ -58,38 +58,38 @@ public final class MavenProxyLauncher {
         //        }
 
         ProxyUtils.getDefaultClassLoader();
-        URL url = ClassLoader.getSystemResource("xsd/proxy-config.xsd");
+        final URL url = ClassLoader.getSystemResource("xsd/proxy-config.xsd");
         LOGGER.info("XSD-Url: {}", url);
-        Source schemaFile = new StreamSource(url.openStream());
+        final Source schemaFile = new StreamSource(url.openStream());
 
-        Source xmlFile = new StreamSource(configUri.toURL().openStream());
+        final Source xmlFile = new StreamSource(configUri.toURL().openStream());
 
         // Validate Schema.
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        final SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
         schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
         schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 
-        Schema schema = schemaFactory.newSchema(schemaFile);
-        //        Validator validator = schema.newValidator();
+        final Schema schema = schemaFactory.newSchema(schemaFile);
+        //        final Validator validator = schema.newValidator();
         //        validator.validate(xmlFile);
 
-        JAXBContext jaxbContext = JAXBContext.newInstance(ProxyConfig.class.getPackageName());
-        Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+        final JAXBContext jaxbContext = JAXBContext.newInstance(ProxyConfig.class.getPackageName());
+        final Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
         unmarshaller.setSchema(schema);
-        ProxyConfig proxyConfig = (ProxyConfig) unmarshaller.unmarshal(xmlFile);
+        final ProxyConfig proxyConfig = (ProxyConfig) unmarshaller.unmarshal(xmlFile);
 
         // ProxyUtils.setupProxy();
 
         //        Logger root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         //        root.setLevel(Level.INFO);
 
-        LifecycleManager lifecycleManager = new LifecycleManager();
+        final LifecycleManager lifecycleManager = new LifecycleManager();
 
-        JreHttpClientComponent httpClientComponent = new JreHttpClientComponent(proxyConfig.getClientConfig());
+        final JreHttpClientComponent httpClientComponent = new JreHttpClientComponent(proxyConfig.getClientConfig());
         lifecycleManager.add(httpClientComponent);
 
-        RepositoryManager repositoryManager = new RepositoryManager();
-        Repositories repositories = proxyConfig.getRepositories();
+        final RepositoryManager repositoryManager = new RepositoryManager();
+        final Repositories repositories = proxyConfig.getRepositories();
 
         // LocalRepository
         repositories.getLocals().forEach(localRepoConfig -> RepositoryBuilder.buildLocal(localRepoConfig, lifecycleManager, repositoryManager));
@@ -101,7 +101,7 @@ public final class MavenProxyLauncher {
         repositories.getVirtuals().forEach(virtualRepoConfig -> RepositoryBuilder.buildVirtual(virtualRepoConfig, lifecycleManager, repositoryManager));
 
         // Server at last
-        ProxyServer proxyServer = new JreHttpServer().setConfig(proxyConfig.getServerConfig());
+        final ProxyServer proxyServer = new JreHttpServer().setConfig(proxyConfig.getServerConfig());
         repositoryManager.getRepositories().forEach(repo -> proxyServer.addContextRoot(repo.getName(), repo));
         lifecycleManager.add(proxyServer);
 
@@ -128,33 +128,33 @@ public final class MavenProxyLauncher {
         LOGGER.info("Try to find proxy-config.xml");
 
         if (args != null && args.length == 2) {
-            String parameter = args[0];
+            final String parameter = args[0];
 
             if ("-maven-proxy.config".equals(parameter)) {
                 return Paths.get(args[1]).toUri();
             }
         }
 
-        String propertyValue = System.getProperty("maven-proxy.config");
+        final String propertyValue = System.getProperty("maven-proxy.config");
 
         if (propertyValue != null) {
             return Paths.get(propertyValue).toUri();
         }
 
-        String envValue = System.getenv("maven-proxy.config");
+        final String envValue = System.getenv("maven-proxy.config");
 
         if (envValue != null) {
             return Paths.get(envValue).toUri();
         }
 
         ProxyUtils.getDefaultClassLoader();
-        URL url = ClassLoader.getSystemResource("proxy-config.xml");
+        final URL url = ClassLoader.getSystemResource("proxy-config.xml");
 
         if (url != null) {
             return url.toURI();
         }
 
-        Path path = Path.of("proxy-config.xml");
+        final Path path = Path.of("proxy-config.xml");
 
         if (Files.exists(path)) {
             return path.toUri();

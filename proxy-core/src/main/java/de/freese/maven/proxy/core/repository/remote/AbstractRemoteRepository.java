@@ -22,7 +22,7 @@ public abstract class AbstractRemoteRepository extends AbstractRepository {
 
     protected URI createResourceUri(final URI uri, final URI resource) {
         String path = uri.getPath();
-        String pathResource = resource.getPath();
+        final String pathResource = resource.getPath();
 
         if (path.endsWith("/") && pathResource.startsWith("/")) {
             path += pathResource.substring(1);
@@ -41,10 +41,10 @@ public abstract class AbstractRemoteRepository extends AbstractRepository {
     protected void doStart() throws Exception {
         super.doStart();
 
-        String scheme = getUri().getScheme();
+        final String scheme = getUri().getScheme();
 
         if (!"http".equalsIgnoreCase(scheme) && !"https".equalsIgnoreCase(scheme)) {
-            String msg = "HTTP or HTTPS protocol required: " + scheme;
+            final String msg = "HTTP or HTTPS protocol required: " + scheme;
 
             getLogger().error(msg);
             throw new IllegalArgumentException(msg);

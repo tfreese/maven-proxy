@@ -24,17 +24,16 @@ public class JreHttpServer extends AbstractProxyServer {
     private final List<HttpContext> httpContexts = new ArrayList<>();
 
     private ExecutorService executorService;
-
     private HttpServer httpServer;
 
     @Override
     protected void doStart() throws Exception {
         super.doStart();
 
-        int port = getServerConfig().getPort();
-        int threadPoolCoreSize = getServerConfig().getThreadPoolCoreSize();
-        int threadPoolMaxSize = getServerConfig().getThreadPoolMaxSize();
-        String threadNamePattern = getServerConfig().getThreadNamePattern();
+        final int port = getServerConfig().getPort();
+        final int threadPoolCoreSize = getServerConfig().getThreadPoolCoreSize();
+        final int threadPoolMaxSize = getServerConfig().getThreadPoolMaxSize();
+        final String threadNamePattern = getServerConfig().getThreadNamePattern();
 
         this.executorService = new ThreadPoolExecutor(threadPoolCoreSize, threadPoolMaxSize, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(), new MavenProxyThreadFactory(threadNamePattern));
 
@@ -42,11 +41,11 @@ public class JreHttpServer extends AbstractProxyServer {
         this.httpServer.setExecutor(executorService);
 
         getContextRoots().forEach((contextRoot, repository) -> {
-            String path = contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
+            final String path = contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
 
             getLogger().info("add contextRoot '{}' for {}", path, repository.getClass().getSimpleName());
 
-            HttpContext httpContext = this.httpServer.createContext(path, new JreHttpServerHandler(repository));
+            final HttpContext httpContext = this.httpServer.createContext(path, new JreHttpServerHandler(repository));
             httpContexts.add(httpContext);
         });
 

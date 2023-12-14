@@ -19,7 +19,6 @@ public class CachedRepositoryResponse extends RepositoryResponse {
     private static final int DEFAULT_BUFFER_SIZE = 8192;
 
     private final BlobId blobId;
-
     private final BlobStore blobStore;
 
     public CachedRepositoryResponse(final RepositoryResponse repositoryResponse, final BlobId blobId, final BlobStore blobStore) {
@@ -31,7 +30,7 @@ public class CachedRepositoryResponse extends RepositoryResponse {
 
     @Override
     public long transferTo(final OutputStream outputStream) throws IOException {
-        byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
+        final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
         int read;
         long transferred = 0L;
 

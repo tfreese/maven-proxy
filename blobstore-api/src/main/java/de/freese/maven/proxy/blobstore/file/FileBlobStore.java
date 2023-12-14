@@ -30,7 +30,7 @@ public class FileBlobStore extends AbstractBlobStore {
 
     @Override
     public OutputStream create(final BlobId id) throws Exception {
-        Path path = toContentPath(id);
+        final Path path = toContentPath(id);
 
         Files.createDirectories(path.getParent());
 
@@ -39,7 +39,7 @@ public class FileBlobStore extends AbstractBlobStore {
 
     @Override
     public void create(final BlobId id, final InputStream inputStream) throws Exception {
-        Path path = toContentPath(id);
+        final Path path = toContentPath(id);
 
         Files.createDirectories(path.getParent());
 
@@ -48,7 +48,7 @@ public class FileBlobStore extends AbstractBlobStore {
 
     @Override
     public void delete(final BlobId id) throws Exception {
-        Path path = toContentPath(id);
+        final Path path = toContentPath(id);
 
         if (Files.exists(path)) {
             Files.delete(path);
@@ -57,7 +57,7 @@ public class FileBlobStore extends AbstractBlobStore {
 
     @Override
     public boolean exists(final BlobId id) throws Exception {
-        Path path = toContentPath(id);
+        final Path path = toContentPath(id);
 
         return Files.exists(path);
     }
@@ -86,9 +86,9 @@ public class FileBlobStore extends AbstractBlobStore {
 
         return Paths.get(getUri()).resolve(uriString);
 
-        //        byte[] uriBytes = uriString.getBytes(StandardCharsets.UTF_8);
-        //        byte[] digest = getMessageDigest().digest(uriBytes);
-        //        String hex = HexFormat.of().withUpperCase().formatHex(uriBytes);
+        //        final byte[] uriBytes = uriString.getBytes(StandardCharsets.UTF_8);
+        //        final byte[] digest = getMessageDigest().digest(uriBytes);
+        //        final String hex = HexFormat.of().withUpperCase().formatHex(uriBytes);
         //
         //        Path path = this.basePath;
         //

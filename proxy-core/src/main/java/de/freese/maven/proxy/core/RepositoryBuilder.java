@@ -31,13 +31,13 @@ public final class RepositoryBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryBuilder.class);
 
     public static Repository buildLocal(final LocalRepoConfig localRepoConfig, final LifecycleManager lifecycleManager, final RepositoryManager repositoryManager) {
-        URI uri = URI.create(localRepoConfig.getPath());
+        final URI uri = URI.create(localRepoConfig.getPath());
 
         if ("file".equalsIgnoreCase(uri.getScheme())) {
-            Repository repository;
+            final Repository repository;
 
             if (localRepoConfig.isWriteable()) {
-                BlobStoreComponent blobStoreComponent = new BlobStoreComponent(new FileBlobStore(uri));
+                final BlobStoreComponent blobStoreComponent = new BlobStoreComponent(new FileBlobStore(uri));
                 lifecycleManager.add(blobStoreComponent);
 
                 repository = new BlobStoreRepository(localRepoConfig.getName(), uri, blobStoreComponent.getBlobStore());
@@ -59,29 +59,29 @@ public final class RepositoryBuilder {
     }
 
     public static Repository buildRemote(final RemoteRepoConfig remoteRepoConfig, final LifecycleManager lifecycleManager, final RepositoryManager repositoryManager, final JreHttpClientComponent httpClientComponent) {
-        URI uri = URI.create(remoteRepoConfig.getUrl());
+        final URI uri = URI.create(remoteRepoConfig.getUrl());
 
         if ("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme())) {
             Repository repository = new JreHttpRemoteRepository(remoteRepoConfig.getName(), uri, httpClientComponent::getHttpClient);
             lifecycleManager.add(repository);
 
             if (remoteRepoConfig.getStore() != null) {
-                StoreConfig storeConfig = remoteRepoConfig.getStore();
+                final StoreConfig storeConfig = remoteRepoConfig.getStore();
 
                 if ("file".equalsIgnoreCase(storeConfig.getType())) {
-                    URI uriCached = URI.create(storeConfig.getUrl());
+                    final URI uriCached = URI.create(storeConfig.getUrl());
 
-                    BlobStoreComponent blobStoreComponent = new BlobStoreComponent(new FileBlobStore(uriCached));
+                    final BlobStoreComponent blobStoreComponent = new BlobStoreComponent(new FileBlobStore(uriCached));
                     lifecycleManager.add(blobStoreComponent);
 
                     repository = new CachedRepository(repository, blobStoreComponent.getBlobStore());
                     lifecycleManager.add(repository);
                 }
                 else if ("jdbc".equalsIgnoreCase(storeConfig.getType())) {
-                    DatasourceComponent datasourceComponent = new DatasourceComponent(storeConfig, remoteRepoConfig.getName());
+                    final DatasourceComponent datasourceComponent = new DatasourceComponent(storeConfig, remoteRepoConfig.getName());
                     lifecycleManager.add(datasourceComponent);
 
-                    BlobStoreComponent blobStoreComponent = new BlobStoreComponent(new JdbcBlobStore(datasourceComponent::getDataSource));
+                    final BlobStoreComponent blobStoreComponent = new BlobStoreComponent(new JdbcBlobStore(datasourceComponent::getDataSource));
                     lifecycleManager.add(blobStoreComponent);
 
                     repository = new CachedRepository(repository, blobStoreComponent.getBlobStore());
@@ -102,10 +102,10 @@ public final class RepositoryBuilder {
 
     public static Repository buildVirtual(final VirtualRepoConfig virtualRepoConfig, final LifecycleManager lifecycleManager, final RepositoryManager repositoryManager) {
         if (!virtualRepoConfig.getRepositoryNames().isEmpty()) {
-            DefaultVirtualRepository virtualRepository = new DefaultVirtualRepository(virtualRepoConfig.getName());
+            final DefaultVirtualRepository virtualRepository = new DefaultVirtualRepository(virtualRepoConfig.getName());
 
             for (String repositoryName : virtualRepoConfig.getRepositoryNames()) {
-                Repository repository = repositoryManager.getRepository(repositoryName);
+                final Repository repository = repositoryManager.getRepository(repositoryName);
 
                 if (repository == null) {
                     LOGGER.error("Repository not found or configured: {}", repositoryName);

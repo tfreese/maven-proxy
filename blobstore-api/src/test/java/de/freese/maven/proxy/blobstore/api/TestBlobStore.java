@@ -45,9 +45,7 @@ class TestBlobStore {
     private static final Path PATH_TEST = Paths.get(System.getProperty("java.io.tmpdir"), "blobStore");
 
     private static DataSource dataSourceDerby;
-
     private static DataSource dataSourceH2;
-
     private static DataSource dataSourceHsqldb;
 
     @AfterAll
@@ -90,7 +88,7 @@ class TestBlobStore {
 
         Files.createDirectories(PATH_TEST);
 
-        BiConsumer<String, HikariConfig> hikariConfigurer = (poolName, config) -> {
+        final BiConsumer<String, HikariConfig> hikariConfigurer = (poolName, config) -> {
             config.setUsername("sa");
             config.setPassword("");
             config.setMinimumIdle(1);
@@ -152,12 +150,12 @@ class TestBlobStore {
             dsBs.createDatabaseIfNotExist();
         }
 
-        Path path = Paths.get("pom.xml");
-        long fileSize = Files.size(path);
-        byte[] bytes = Files.readAllBytes(path);
+        final Path path = Paths.get("pom.xml");
+        final long fileSize = Files.size(path);
+        final byte[] bytes = Files.readAllBytes(path);
 
-        URI uri = path.toUri();
-        BlobId blobId = new BlobId(uri);
+        final URI uri = path.toUri();
+        final BlobId blobId = new BlobId(uri);
 
         assertFalse(blobStore.exists(blobId));
 
@@ -176,12 +174,12 @@ class TestBlobStore {
             dsBs.createDatabaseIfNotExist();
         }
 
-        URI uri = URI.create("file:///not_existing");
-        BlobId blobId = new BlobId(uri);
+        final URI uri = URI.create("file:///not_existing");
+        final BlobId blobId = new BlobId(uri);
         assertFalse(blobStore.exists(blobId));
 
         // Select
-        Blob blob = blobStore.get(blobId);
+        final Blob blob = blobStore.get(blobId);
         assertNotNull(blob);
         assertEquals(-1, blob.getLength());
         assertEquals(uri, blob.getId().getUri());
@@ -199,12 +197,12 @@ class TestBlobStore {
             jdbcBlobStore.createDatabaseIfNotExist();
         }
 
-        Path path = Paths.get("pom.xml");
-        long fileSize = Files.size(path);
-        byte[] bytes = Files.readAllBytes(path);
+        final Path path = Paths.get("pom.xml");
+        final long fileSize = Files.size(path);
+        final byte[] bytes = Files.readAllBytes(path);
 
-        URI uri = path.toUri();
-        BlobId blobId = new BlobId(uri);
+        final URI uri = path.toUri();
+        final BlobId blobId = new BlobId(uri);
 
         assertFalse(blobStore.exists(blobId));
 
@@ -227,7 +225,7 @@ class TestBlobStore {
         assertTrue(blobStore.exists(blobId));
 
         // Select
-        Blob blob = blobStore.get(blobId);
+        final Blob blob = blobStore.get(blobId);
         assertNotNull(blob);
         assertEquals(fileSize, blob.getLength());
         assertEquals(uri, blob.getId().getUri());

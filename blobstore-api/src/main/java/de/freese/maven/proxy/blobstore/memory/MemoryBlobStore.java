@@ -18,7 +18,6 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
 public class MemoryBlobStore extends AbstractBlobStore {
 
     private final Map<BlobId, byte[]> cache = new HashMap<>();
-
     private final URI uri = URI.create("memory");
 
     @Override

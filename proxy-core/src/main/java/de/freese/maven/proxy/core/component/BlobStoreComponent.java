@@ -42,7 +42,7 @@ public class BlobStoreComponent extends AbstractLifecycle {
         super.doStart();
 
         if (blobStore instanceof FileBlobStore) {
-            Path path = Paths.get(blobStore.getUri());
+            final Path path = Paths.get(blobStore.getUri());
 
             if (!Files.exists(path)) {
                 Files.createDirectories(path);

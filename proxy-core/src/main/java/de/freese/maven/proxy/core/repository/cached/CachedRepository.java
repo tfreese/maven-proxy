@@ -35,9 +35,9 @@ public class CachedRepository extends AbstractRepository {
 
     @Override
     protected boolean doExist(final URI resource) throws Exception {
-        BlobId blobId = new BlobId(resource);
+        final BlobId blobId = new BlobId(resource);
 
-        boolean exist = getBlobStore().exists(blobId);
+        final boolean exist = getBlobStore().exists(blobId);
 
         if (exist) {
             if (getLogger().isDebugEnabled()) {
@@ -62,14 +62,14 @@ public class CachedRepository extends AbstractRepository {
             return this.delegate.getInputStream(resource);
         }
 
-        BlobId blobId = new BlobId(resource);
+        final BlobId blobId = new BlobId(resource);
 
         if (getBlobStore().exists(blobId)) {
             if (getLogger().isDebugEnabled()) {
                 getLogger().debug("getInputStream - found: {}", resource);
             }
 
-            Blob blob = getBlobStore().get(blobId);
+            final Blob blob = getBlobStore().get(blobId);
 
             return new RepositoryResponse(resource, blob.getLength(), blob.getInputStream());
         }
@@ -78,7 +78,7 @@ public class CachedRepository extends AbstractRepository {
                 getLogger().debug("getInputStream - not found: {}", resource);
             }
 
-            RepositoryResponse response = this.delegate.getInputStream(resource);
+            final RepositoryResponse response = this.delegate.getInputStream(resource);
 
             if (response != null) {
                 if (getLogger().isDebugEnabled()) {

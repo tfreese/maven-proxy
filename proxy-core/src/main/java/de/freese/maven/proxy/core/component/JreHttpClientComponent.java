@@ -22,7 +22,6 @@ public class JreHttpClientComponent extends AbstractLifecycle {
     private final ClientConfig clientConfig;
 
     private ExecutorService executorService;
-
     private HttpClient httpClient;
 
     public JreHttpClientComponent(final ClientConfig clientConfig) {
@@ -44,14 +43,14 @@ public class JreHttpClientComponent extends AbstractLifecycle {
         checkValue(clientConfig.getThreadPoolMaxSize(), value -> value <= 0 ? ("ThreadPoolMaxSize has invalid range: " + value) : null);
         checkNotNull(clientConfig.getThreadNamePattern(), "ThreadNamePattern");
 
-        int threadPoolCoreSize = clientConfig.getThreadPoolCoreSize();
-        int threadPoolMaxSize = clientConfig.getThreadPoolMaxSize();
-        String threadNamePattern = clientConfig.getThreadNamePattern();
+        final int threadPoolCoreSize = clientConfig.getThreadPoolCoreSize();
+        final int threadPoolMaxSize = clientConfig.getThreadPoolMaxSize();
+        final String threadNamePattern = clientConfig.getThreadNamePattern();
 
         this.executorService = new ThreadPoolExecutor(threadPoolCoreSize, threadPoolMaxSize, 60L, TimeUnit.SECONDS, new SynchronousQueue<>(), new MavenProxyThreadFactory(threadNamePattern));
 
         // @formatter:off
-        HttpClient.Builder builder = HttpClient.newBuilder()
+        final HttpClient.Builder builder = HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_2)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .proxy(ProxySelector.getDefault())

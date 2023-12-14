@@ -13,7 +13,6 @@ import de.freese.maven.proxy.blobstore.api.BlobId;
 final class FileBlob extends AbstractBlob {
 
     private final Path absolutePath;
-
     private final boolean exist;
 
     FileBlob(final BlobId id, final Path absolutePath) {

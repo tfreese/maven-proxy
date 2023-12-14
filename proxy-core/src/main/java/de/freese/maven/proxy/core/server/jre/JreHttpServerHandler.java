@@ -33,12 +33,12 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
         super();
 
         this.repository = checkNotNull(repository, "Repository");
-        this.contextRoot = "/" + getRepository().getName();
+        this.contextRoot = "/" + repository.getName();
     }
 
     @Override
     public void handle(final HttpExchange exchange) throws IOException {
-        HttpMethod httpMethod = HttpMethod.get(exchange.getRequestMethod());
+        final HttpMethod httpMethod = HttpMethod.get(exchange.getRequestMethod());
 
         if (getLogger().isDebugEnabled()) {
             getLogger().debug("{}: {}", httpMethod, exchange.getRequestURI());
@@ -114,13 +114,13 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
     }
 
     protected void handleGet(final HttpExchange exchange) throws Exception {
-        URI uri = removeContextRoot(exchange.getRequestURI());
+        final URI uri = removeContextRoot(exchange.getRequestURI());
 
-        RepositoryResponse repositoryResponse = getRepository().getInputStream(uri);
+        final RepositoryResponse repositoryResponse = getRepository().getInputStream(uri);
 
         if (repositoryResponse == null) {
-            String message = "File not found: " + uri.toString();
-            byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
+            final String message = "File not found: " + uri.toString();
+            final byte[] bytes = message.getBytes(StandardCharsets.UTF_8);
 
             exchange.sendResponseHeaders(ProxyUtils.HTTP_NOT_FOUND, bytes.length);
 
@@ -133,7 +133,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
             return;
         }
 
-        long fileLength = repositoryResponse.getContentLength();
+        final long fileLength = repositoryResponse.getContentLength();
 
         exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_SERVER, SERVER_NAME);
         exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_CONTENT_TYPE, ProxyUtils.getContentType(repositoryResponse.getFileName()));
@@ -147,11 +147,11 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
     }
 
     protected void handleHead(final HttpExchange exchange) throws Exception {
-        URI uri = removeContextRoot(exchange.getRequestURI());
+        final URI uri = removeContextRoot(exchange.getRequestURI());
 
-        boolean exist = getRepository().exist(uri);
+        final boolean exist = getRepository().exist(uri);
 
-        int response = exist ? ProxyUtils.HTTP_OK : ProxyUtils.HTTP_NOT_FOUND;
+        final int response = exist ? ProxyUtils.HTTP_OK : ProxyUtils.HTTP_NOT_FOUND;
 
         exchange.getResponseHeaders().add(ProxyUtils.HTTP_HEADER_SERVER, SERVER_NAME);
         exchange.sendResponseHeaders(response, -1);
@@ -161,7 +161,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
      * Deploy
      **/
     protected void handlePut(final HttpExchange exchange) throws Exception {
-        URI uri = removeContextRoot(exchange.getRequestURI());
+        final URI uri = removeContextRoot(exchange.getRequestURI());
 
         try (InputStream inputStream = new BufferedInputStream(exchange.getRequestBody())) {
             getRepository().write(uri, inputStream);
@@ -172,7 +172,7 @@ public class JreHttpServerHandler extends AbstractComponent implements HttpHandl
     }
 
     protected URI removeContextRoot(final URI uri) {
-        String path = uri.getPath().substring(getContextRoot().length());
+        final String path = uri.getPath().substring(getContextRoot().length());
 
         return URI.create(path);
     }

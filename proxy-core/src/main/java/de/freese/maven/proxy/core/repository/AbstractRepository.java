@@ -13,7 +13,6 @@ import de.freese.maven.proxy.core.utils.HttpMethod;
 public abstract class AbstractRepository extends AbstractLifecycle implements Repository {
 
     private final String name;
-
     private final URI uri;
 
     protected AbstractRepository(final String name, final URI uri) {
@@ -26,7 +25,7 @@ public abstract class AbstractRepository extends AbstractLifecycle implements Re
     @Override
     public boolean exist(final URI resource) throws Exception {
         if (!isStarted()) {
-            getLogger().warn("Component not started: {}" + getName());
+            getLogger().warn("Component not started: {}", getName());
             return false;
         }
 
@@ -40,7 +39,7 @@ public abstract class AbstractRepository extends AbstractLifecycle implements Re
     @Override
     public RepositoryResponse getInputStream(final URI resource) throws Exception {
         if (!isStarted()) {
-            getLogger().warn("Component not started: {}" + getName());
+            getLogger().warn("Component not started: {}", getName());
             return null;
         }
 
@@ -74,7 +73,7 @@ public abstract class AbstractRepository extends AbstractLifecycle implements Re
     @Override
     public void write(final URI resource, final InputStream inputStream) throws Exception {
         if (!isStarted()) {
-            getLogger().warn("Component not started: {}" + getName());
+            getLogger().warn("Component not started: {}", getName());
             return;
         }
 

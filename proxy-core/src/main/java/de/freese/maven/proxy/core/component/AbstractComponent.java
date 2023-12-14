@@ -19,7 +19,7 @@ public abstract class AbstractComponent {
     }
 
     protected final <T> T checkValue(final T object, final Function<T, String> validator) {
-        String message = validator.apply(object);
+        final String message = validator.apply(object);
 
         if (message != null && !message.isBlank()) {
             throw new IllegalArgumentException(message);

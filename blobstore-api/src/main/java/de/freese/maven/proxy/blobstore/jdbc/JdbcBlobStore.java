@@ -33,7 +33,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
 
     private static URI getUri(final DataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
-            String url = connection.getMetaData().getURL();
+            final String url = connection.getMetaData().getURL();
 
             return URI.create(url);
         }
@@ -56,12 +56,12 @@ public class JdbcBlobStore extends AbstractBlobStore {
 
     @Override
     public OutputStream create(final BlobId id) throws Exception {
-        String sql = "insert into BLOB_STORE (URI, BLOB) values (?, ?)";
+        final String sql = "insert into BLOB_STORE (URI, BLOB) values (?, ?)";
 
-        Connection connection = getDataSource().getConnection();
+        final Connection connection = getDataSource().getConnection();
         connection.setAutoCommit(false);
 
-        java.sql.Blob blob = connection.createBlob();
+        final java.sql.Blob blob = connection.createBlob();
 
         return new FilterOutputStream(blob.setBinaryStream(1)) {
             @Override
@@ -115,7 +115,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
 
     @Override
     public void create(final BlobId id, final InputStream inputStream) throws Exception {
-        String sql = "insert into BLOB_STORE (URI, BLOB) values (?, ?)";
+        final String sql = "insert into BLOB_STORE (URI, BLOB) values (?, ?)";
 
         try (Connection connection = getDataSource().getConnection()) {
             connection.setAutoCommit(false);
@@ -139,7 +139,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
         boolean databaseExists = false;
 
         try (Connection connection = getDataSource().getConnection()) {
-            ResultSet resultSet = connection.getMetaData().getTables(null, null, "BLOB_STORE", null);
+            final ResultSet resultSet = connection.getMetaData().getTables(null, null, "BLOB_STORE", null);
 
             if (resultSet.next()) {
                 databaseExists = true;
@@ -151,7 +151,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
         }
 
         getLogger().info("Lookup for blobstore.sql");
-        URL url = Thread.currentThread().getContextClassLoader().getResource("jdbc/blobstore.sql");
+        final URL url = Thread.currentThread().getContextClassLoader().getResource("jdbc/blobstore.sql");
 
         if (url == null) {
             throw new SQLException("no sql script found");
@@ -166,7 +166,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
              BufferedReader bufferedReader = new BufferedReader(inputStreamReader)) {
 
             // @formatter:off
-            String script = bufferedReader.lines()
+            final String script = bufferedReader.lines()
                     .filter(Objects::nonNull)
                     .filter(l -> !l.isEmpty())
                     .filter(l -> !l.startsWith("--"))
@@ -182,7 +182,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
                 scanner.useDelimiter(";");
 
                 while (scanner.hasNext()) {
-                    String sql = scanner.next().strip();
+                    final String sql = scanner.next().strip();
                     getLogger().info("execute: {}", sql);
                     statement.execute(sql);
                 }
@@ -192,7 +192,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
 
     @Override
     public void delete(final BlobId id) throws Exception {
-        String sql = "delete from BLOB_STORE where URI = ?";
+        final String sql = "delete from BLOB_STORE where URI = ?";
 
         try (Connection connection = getDataSource().getConnection()) {
             connection.setAutoCommit(false);
@@ -213,7 +213,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
 
     @Override
     public boolean exists(final BlobId id) throws Exception {
-        String sql = "select count(*) from BLOB_STORE where URI = ?";
+        final String sql = "select count(*) from BLOB_STORE where URI = ?";
 
         try (Connection connection = getDataSource().getConnection();
              PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
@@ -222,7 +222,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
             try (ResultSet resultSet = prepareStatement.executeQuery()) {
                 resultSet.next();
 
-                int result = resultSet.getInt(1);
+                final int result = resultSet.getInt(1);
 
                 return result > 0;
             }
@@ -232,7 +232,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
     @Override
     public URI getUri() {
         if (this.uri == null) {
-            DataSource dataSource = getDataSource();
+            final DataSource dataSource = getDataSource();
 
             if (dataSource == null) {
                 return URI.create("jdbc");
@@ -245,20 +245,20 @@ public class JdbcBlobStore extends AbstractBlobStore {
     }
 
     InputStream inputStream(final BlobId id) throws Exception {
-        String sql = "select BLOB from BLOB_STORE where URI = ?";
+        final String sql = "select BLOB from BLOB_STORE where URI = ?";
 
-        Connection connection = getDataSource().getConnection();
+        final Connection connection = getDataSource().getConnection();
 
-        PreparedStatement preparedStatement = connection.prepareStatement(sql);
+        final PreparedStatement preparedStatement = connection.prepareStatement(sql);
         preparedStatement.setString(1, id.getUri().toString());
 
-        ResultSet resultSet = preparedStatement.executeQuery();
+        final ResultSet resultSet = preparedStatement.executeQuery();
 
         if (!resultSet.next()) {
             return InputStream.nullInputStream();
         }
 
-        java.sql.Blob blob = resultSet.getBlob("BLOB");
+        final java.sql.Blob blob = resultSet.getBlob("BLOB");
 
         return new FilterInputStream(blob.getBinaryStream()) {
             @Override
@@ -309,7 +309,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
     }
 
     long length(final BlobId id) throws Exception {
-        String sql = "select BLOB from BLOB_STORE where URI = ?";
+        final String sql = "select BLOB from BLOB_STORE where URI = ?";
 
         try (Connection connection = getDataSource().getConnection();
              PreparedStatement prepareStatement = connection.prepareStatement(sql)) {
@@ -317,7 +317,7 @@ public class JdbcBlobStore extends AbstractBlobStore {
 
             try (ResultSet resultSet = prepareStatement.executeQuery()) {
                 if (resultSet.next()) {
-                    java.sql.Blob blob = resultSet.getBlob("BLOB");
+                    final java.sql.Blob blob = resultSet.getBlob("BLOB");
 
                     return blob.length();
                 }
