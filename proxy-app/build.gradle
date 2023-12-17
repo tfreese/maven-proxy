@@ -4,9 +4,13 @@ plugins {
 
 clean {
     doFirst {
-        println("delete " + layout.projectDirectory.dir("app"))
-//        delete fileTree(layout.projectDirectory.dir("app")).include("**/*")
-        delete layout.projectDirectory.dir("app")
+        Directory dirApp = layout.projectDirectory.dir("app")
+
+        if (dirApp.getAsFile().exists()) {
+            println("delete " + dirApp)
+//        delete fileTree(dirApp).include("**/*")
+            delete dirApp
+        }
     }
 }
 

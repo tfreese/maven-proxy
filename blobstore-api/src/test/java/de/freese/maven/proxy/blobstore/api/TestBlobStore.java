@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -68,9 +67,6 @@ class TestBlobStore {
             if (dataSource instanceof AutoCloseable ac) {
                 ac.close();
             }
-            else if (dataSource instanceof Closeable c) {
-                c.close();
-            }
             //            else if (dataSource instanceof DisposableBean db) {
             //                db.destroy();
             //            }
@@ -79,10 +75,10 @@ class TestBlobStore {
 
     @BeforeAll
     static void beforeAll() throws Exception {
-        // JUL-Logger ausschalten.
+        // Disable JUL-Logger.
         // LogManager.getLogManager().reset();
 
-        // JUL-Logger auf slf4j umleiten.
+        // Redirect JUL-Logger to slf4j.
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
 
@@ -213,12 +209,6 @@ class TestBlobStore {
         }
 
         testAfterInsert(blobStore, blobId, uri, fileSize, bytes);
-    }
-
-    @ParameterizedTest(name = "{index} -> {0}")
-    @MethodSource("createArgumentes")
-    void testUri(final String name, final BlobStore blobStore) throws Exception {
-        System.out.println("name = " + name + ", blobStore = " + blobStore.getUri());
     }
 
     protected void testAfterInsert(final BlobStore blobStore, final BlobId blobId, final URI uri, final long fileSize, final byte[] bytes) throws Exception {
