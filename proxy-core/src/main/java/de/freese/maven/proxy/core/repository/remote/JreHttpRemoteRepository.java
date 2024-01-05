@@ -38,13 +38,13 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
         // @formatter:on
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("exist - Request: {}", request.toString());
+            getLogger().debug("exist - Request: {}", request);
         }
 
         final HttpResponse<Void> response = getHttpClient().send(request, HttpResponse.BodyHandlers.discarding());
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("exist - Response: {}", response.toString());
+            getLogger().debug("exist - Response: {}", response);
         }
 
         return response.statusCode() == ProxyUtils.HTTP_OK;
@@ -64,13 +64,13 @@ public class JreHttpRemoteRepository extends AbstractRemoteRepository {
         // @formatter:on
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("getInputStream - Request: {}", request.toString());
+            getLogger().debug("getInputStream - Request: {}", request);
         }
 
         final HttpResponse<InputStream> response = getHttpClient().send(request, HttpResponse.BodyHandlers.ofInputStream());
 
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug("getInputStream - Response: {}", response.toString());
+            getLogger().debug("getInputStream - Response: {}", response);
         }
 
         if (response.statusCode() != ProxyUtils.HTTP_OK) {

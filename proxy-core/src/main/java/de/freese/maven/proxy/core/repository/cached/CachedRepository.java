@@ -18,7 +18,6 @@ import de.freese.maven.proxy.core.utils.ProxyUtils;
 public class CachedRepository extends AbstractRepository {
 
     private final BlobStore blobStore;
-
     private final Repository delegate;
 
     public CachedRepository(final Repository delegate, final BlobStore blobStore) {
